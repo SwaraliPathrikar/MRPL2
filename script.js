@@ -115,7 +115,7 @@ function loadFallbackInventory() {
         { type: 'Indoor signages', total: 30 },
         { type: 'Wireless Access Point', total: 2 },
         { type: 'Video Conferencing Solution', total: 2 },
-        { type: 'Smart Rack', total: 1 },
+        { type: 'Switches', total: 1 },
         { type: 'Diesel Generator Set', total: 2 }
     ];
     
@@ -273,7 +273,7 @@ function createDeviceCategoryChart(categories) {
             'Indoor signages (30)',
             'Wireless Access Point (2)',
             'Video Conferencing Solution (2)',
-            'Smart Rack (1)',
+            'Switches (1)',
             'Diesel Generator Set (2)'
         ]
     };
@@ -1531,7 +1531,7 @@ const deviceIcons = {
     'Indoor signages': '🪧',
     'Wireless Access Point': '📶',
     'Video Conferencing Solution': '💻',
-    'Smart Rack': '🗄️',
+    'Switches': '🗄️',
     'Diesel Generator Set': '⚡'
 };
 
@@ -1578,7 +1578,7 @@ const allBOQDevices = [
     // { type: 'Indoor signages', total: 50, online: 50, offline: 0 },
     { type: 'Wireless Access Points', total: 40, online: 40, offline: 0 },
     { type: 'Video Conferencing Solution', total: 4, online: 4, offline: 0 },
-    { type: 'Smart Rack', total: 8, online: 8, offline: 0 },
+    { type: 'Switches', total: 8, online: 8, offline: 0 },
     // { type: 'Diesel Generator Set', total: 2, online: 2, offline: 0 }
 ];
 
@@ -1677,26 +1677,32 @@ function showSpecificDeviceDetails(device) {
             }
         });
     } else {
-        // Use deviceGateLocations mapping - one row per gate
-        const onlinePerGate = Math.floor(device.online / deviceGates.length);
-        const offlinePerGate = Math.floor(device.offline / deviceGates.length);
-        
-        deviceGates.forEach((gate, index) => {
-            const gateOnline = onlinePerGate + (index === 0 ? device.online % deviceGates.length : 0);
-            const gateOffline = offlinePerGate + (index === 0 ? device.offline % deviceGates.length : 0);
-            const gateTotal = gateOnline + gateOffline;
+        // Use deviceGateLocations mapping - show EACH gate location as separate row
+        deviceGates.forEach((gateLocation) => {
+            // Each gate location gets 1 device (or count from gateDeviceDistribution if available)
+            let count = 1;
             
-            if (gateTotal > 0) {
-                currentDeviceData.push({
-                    type: device.type,
-                    gate: gate,
-                    count: gateTotal,
-                    online: gateOnline,
-                    offline: gateOffline,
-                    status: gateOffline > 0 ? 'Offline' : 'Online',
-                    deviceNumber: deviceCounter++
-                });
+            // Try to get actual count from gateDeviceDistribution
+            // Extract main gate name (before colon if present)
+            const mainGateName = gateLocation.split(':')[0].trim();
+            
+            if (gateDeviceDistribution[mainGateName] && gateDeviceDistribution[mainGateName][device.type]) {
+                count = gateDeviceDistribution[mainGateName][device.type];
             }
+            
+            // Simulate online/offline (95% online)
+            const online = Math.round(count * 0.95);
+            const offline = count - online;
+            
+            currentDeviceData.push({
+                type: device.type,
+                gate: gateLocation,
+                count: count,
+                online: online,
+                offline: offline,
+                status: offline > 0 ? 'Offline' : 'Online',
+                deviceNumber: deviceCounter++
+            });
         });
     }
     
@@ -1929,7 +1935,7 @@ let currentSelectedGate = 'all';
 let gateDevicePieChart = null;
 
 const gateDeviceDistribution = {
-    'Main Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance System (UVSS)': 2,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 8,'Visitor Kiosks': 3,'32" Overhead Display': 3,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Video Wall (6 x 3)': 1,'Door Frame Metal Detector (DFMD)': 6,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 8,'Push Button for Boom Barrier': 8,'EM Locks': 3,'Indoor Dome Camera - 5 MP': 35,'Outdoor Fixed Camera - 5 MP': 26,'PTZ with IR - 2MP': 2,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Camera - 360° - 20 MP': 8,'ANPR Cameras': 4,'Face recognition Cameras': 4,'IP Horn Speaker': 31,'IP Ceiling Speaker': 28,'Face recognition Readers': 14,'Smart Card Reader': 1,'QR Code Readers': 14,'Camera Poles': 4,'Rack (12U)': 2,'Outdoor Junction Box': 16,'Portable face readers (buses)': 20,'Portable face readers (on gates)': 4,'10 finger enrolment readers': 2,'Indoor signages': 10,'Video Conferencing Solution': 2,'Smart Rack': 1,'Diesel Generator Set': 1},
+    'Main Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance System (UVSS)': 2,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 8,'Visitor Kiosks': 3,'32" Overhead Display': 3,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Video Wall (6 x 3)': 1,'Door Frame Metal Detector (DFMD)': 6,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 8,'Push Button for Boom Barrier': 8,'EM Locks': 3,'Indoor Dome Camera - 5 MP': 35,'Outdoor Fixed Camera - 5 MP': 26,'PTZ with IR - 2MP': 2,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Camera - 360° - 20 MP': 8,'ANPR Cameras': 4,'Face recognition Cameras': 4,'IP Horn Speaker': 31,'IP Ceiling Speaker': 28,'Face recognition Readers': 14,'Smart Card Reader': 1,'QR Code Readers': 14,'Camera Poles': 4,'Rack (12U)': 2,'Outdoor Junction Box': 16,'Portable face readers (buses)': 20,'Portable face readers (on gates)': 4,'10 finger enrolment readers': 2,'Indoor signages': 10,'Video Conferencing Solution': 2,'Switches': 1,'Diesel Generator Set': 1},
     'LP Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 4,'Visitor Kiosks': 1,'32" Overhead Display': 2,'Indoor Digital Displays': 1,'Outdoor Digital Displays': 2,'Door Frame Metal Detector (DFMD)': 1,'Baggage Scanner': 1,'Frisking Booth': 1,'Long Range RFID Reader': 4,'Push Button for Boom Barrier': 4,'EM Locks': 2,'Indoor Dome Camera - 5 MP': 10,'Outdoor Fixed Camera - 5 MP': 11,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Camera - 360° - 20 MP': 2,'ANPR Cameras': 2,'Face recognition Cameras': 2,'IP Horn Speaker': 5,'IP Ceiling Speaker': 5,'Face recognition Readers': 4,'Smart Card Reader': 1,'QR Code Readers': 4,'Camera Poles': 4,'Rack (12U)': 1,'10 finger enrolment readers': 1,'Indoor signages': 6},
     'Jokatte Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance System (UVSS)': 2,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 3,'Visitor Kiosks': 1,'32" Overhead Display': 2,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Door Frame Metal Detector (DFMD)': 2,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 4,'Push Button for Boom Barrier': 4,'Electro Magnetic Locks': 2,'Indoor Dome Cameras- 5 MP': 23,'Outdoor Fixed Cameras- 5 MP': 14,'PTZ with IR - 2MP': 2,'Panoramic Camera- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 3,'ANPR Cameras': 4,'Face recognition Cameras': 4,'IP Horn Speaker': 9,'IP Ceiling Speaker': 2,'Face recognition Readers': 6,'QR Code Readers': 6,'Camera Poles': 2,'Rack (12U)': 1,'Outdoor Junction Box': 17,'10 finger enrolment readers': 1,'Indoor signages': 10,'Wireless Access Point': 1,'Portable face readers (buses)': 1,'Portable face readers (gates)': 1},
     'E2 Gate': {'Boom Barrier': 2,'Swing Barriers': 2,'32" Overhead Display': 2,'Indoor Digital Displays': 1,'Door Frame Metal Detector (DFMD)': 2,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 2,'Push Button for Boom Barrier': 2,'Electro Magnetic Locks': 1,'Indoor Dome Cameras- 5 MP': 4,'Outdoor Fixed Cameras- 5 MP': 2,'PTZ with IR - 2MP': 4,'Panoramic Camera- 180° - 20 MP': 1,'Panoramic Camera- 360° - 20 MP': 2,'ANPR Cameras': 2,'Face recognition Cameras': 3,'IP Horn Speaker': 1,'IP Ceiling Speaker': 1,'Face recognition Readers': 4,'QR Code Readers': 4,'Camera Poles': 2,'Rack (12U)': 1,'Outdoor Junction Box': 14,'Indoor signages': 2},
@@ -1940,49 +1946,49 @@ const gateDeviceDistribution = {
 };
 
 const deviceGateLocations = {
-    'Gate': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate','Railway Sliding','PCR'],
-    'Automatic Tyre Killer': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
-    'Manual Tyre Killer': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
-    'Under Vehicle Surveillance System (UVSS)': ['Main Gate', 'LP Gate', 'Cargo Gate', 'Jokatte Gate', 'Railway Sliding', 'PCR', 'CISF Checking (Jokatte Gate)'],
+    'Gates': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate','Railway Sliding','PCR'],
+    'Automatic Tyre Killers': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
+    'Manual Tyre Killers': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
+    'Under Vehicle Surveillance Systems (UVSS)': ['Main Gate', 'LP Gate', 'Cargo Gate', 'Jokatte Gate', 'Railway Sliding', 'PCR', 'CISF Checking (Jokatte Gate)'],
     'Bollards': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
-    'Boom Barrier': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
-    'Swing Barriers': ['Main Gate: Exe/VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: Exe/VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian & Gate', 'PCR: Pedestrian'],
+    'Boom Barriers': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
+    'Swing Barriers': ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     'Visitor Kiosks': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
-    '32" Overhead Display':  ['Main Gate: Exe/VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: Exe/VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian & Gate', 'PCR: Pedestrian'],
+    '32" Overhead Displays':  ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     'Indoor Digital Displays': ['Main Gate', 'LP Gate', 'Cargo Gate'],
     'Outdoor Digital Displays': ['Main Gate', 'LP Gate', 'Cargo Gate'],
     'Video Wall (6 x 3)': ['Main Gate: Command Centre'],
     'Video Wall (2 x 3)': ['PCR (Plant Gate)'],
-    'Door Frame Metal Detector (DFMD)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
-    'Baggage Scanner': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
+    'Door Frame Metal Detectors (DFMD)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
+    'Baggage Scanners': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
     // 'Frisking Booth': ['Main Gate', 'Cargo Gate', 'CISF Checking'],
-    'Long Range RFID Reader': ['Main Gate: Canopy', 'LP Gate: Canopy', 'Jokatte Gate: Canopy', 'E2 Gate: Canopy', 'Cargo Gate: Canopy'],
-    'Push Button for Boom Barrier': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
+    'Long Range RFID Readers': ['Main Gate: Canopy', 'LP Gate: Canopy', 'Jokatte Gate: Canopy', 'E2 Gate: Canopy', 'Cargo Gate: Canopy'],
+    'Push Button for Boom Barriers': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
     'Electro Magnetic Locks': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
-    'Indoor Dome Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF','Main Gate: 1F', 'LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian & Gate', 'Cargo Gate: Canopy'],
-    'Outdoor Fixed Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF', 'LP Gate: Canopy','LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian & Gate', 'Cargo Gate: Canopy', 'Railway Siding'],
+    'Indoor Dome Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF','Main Gate: 1F', 'LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian', 'Cargo Gate: Canopy'],
+    'Outdoor Fixed Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF', 'LP Gate: Canopy','LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian', 'Cargo Gate: Canopy', 'Railway Siding'],
     'PTZ with IR - 2MP': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'Cargo Gate','Railway Sliding'],
-    'Panoramic Camera- 180° - 20 MP': ['Main Gate: Security Check Building','Main Gate: Canopy' ,'LP Gate: Security Check Building','LP Gate: Canopy', 'Jokatte Gate: Security Check Building','Jokatte Gate: Canopy' ,'E2 Gate: Security Check Building','E2 Gate: Canopy','Cargo Gate: Security Check Building', 'Cargo Gate: Canopy','Railway Sliding: Security Check Building', 'Railway Sliding: Canopy','PCR: Security Check Building','PCR: Canopy', 'CISF Checking (Jokatte Gate): Security Check Building', 'CISF Checking (Jokatte Gate): Canopy'],
-    'Panoramic Camera- 360° - 20 MP': ['Main Gate: Parking', 'LP Gate: Parking', 'Jokatte Gate: Parking', 'E2 Gate: Parking', 'Cargo Gate: Parking','Railway Sliding: Parking','PCR: Parking','CISF Checking (Jokatte Gate): Parking'],
+    'Panoramic Cameras- 180° - 20 MP': ['Main Gate: Security Check Building','Main Gate: Canopy' ,'LP Gate: Security Check Building','LP Gate: Canopy', 'Jokatte Gate: Security Check Building','Jokatte Gate: Canopy' ,'E2 Gate: Security Check Building','E2 Gate: Canopy','Cargo Gate: Security Check Building', 'Cargo Gate: Canopy','Railway Sliding: Security Check Building', 'Railway Sliding: Canopy','PCR: Security Check Building','PCR: Canopy', 'CISF Checking (Jokatte Gate): Security Check Building', 'CISF Checking (Jokatte Gate): Canopy'],
+    'Panoramic Cameras- 360° - 20 MP': ['Main Gate: Parking', 'LP Gate: Parking', 'Jokatte Gate: Parking', 'E2 Gate: Parking', 'Cargo Gate: Parking','Railway Sliding: Parking','PCR: Parking','CISF Checking (Jokatte Gate): Parking'],
     'ANPR Cameras': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
     'Face recognition Cameras': ['Main Gate: Security Check Building','Main Gate: Canopy','LP Gate: Security Check Building' ,'LP Gate: Canopy', 'Jokatte Gate: Security Check Building','Jokatte Gate: Canopy', 'Cargo Gate: Security Check Building', 'Cargo Gate: Canopy'],
-    'IP Horn Speaker': ['Main Gate: Security Check Building','Main Gate: Canopy','Main Gate: Parking' ,'LP Gate: Security Check Building','LP Gate: Canopy','LP Gate: Parking', 'Jokatte Gate: Security Check Building','Jokatte Gate: Canopy', 'Jokatte Gate: Parking','E2 Gate: Security Check Building','E2 Gate: Canopy','E2 Gate: Parking', 'Cargo Gate: Security Check Building','Cargo Gate: Canopy','Cargo Gate: Parking','Railway Sliding: Security Check Building','Railway Sliding: Canopy','Railway Sliding: Parking'],
-    'IP Ceiling Speaker': ['Main Gate: Security Check Building','Main Gate: Command Centre Building','LP Gate: Security Check Building','Jokatte Gate: Security Check Building','E2 Gate: Security Check Building', 'Cargo Gate: Security Check Building','Railway Sliding: Security Check Building'],
+    'IP Horn Speakers': ['Main Gate: Security Check Building','Main Gate: Canopy','Main Gate: Parking' ,'LP Gate: Security Check Building','LP Gate: Canopy','LP Gate: Parking', 'Jokatte Gate: Security Check Building','Jokatte Gate: Canopy', 'Jokatte Gate: Parking','E2 Gate: Security Check Building','E2 Gate: Canopy','E2 Gate: Parking', 'Cargo Gate: Security Check Building','Cargo Gate: Canopy','Cargo Gate: Parking','Railway Sliding: Security Check Building','Railway Sliding: Canopy','Railway Sliding: Parking'],
+    'IP Ceiling Speakers': ['Main Gate: Security Check Building','Main Gate: Command Centre Building','LP Gate: Security Check Building','Jokatte Gate: Security Check Building','E2 Gate: Security Check Building', 'Cargo Gate: Security Check Building','Railway Sliding: Security Check Building'],
     'Master & Local Control Desks': ['Main Gate: Command Centre Building'],
-    'Face recognition Readers':  ['Main Gate: Exe/VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: Exe/VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian & Gate', 'PCR: Pedestrian'],
+    'Face recognition Readers':  ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     // 'Smart Card Reader': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
-    'QR Code Readers':  ['Main Gate: Exe/VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: Exe/VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian & Gate', 'PCR: Pedestrian'],
+    'QR Code Readers':  ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     // 'Camera Poles': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'Railway Siding'],
-    'Rack (12U)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'Railway Sliding'],
-    'Outdoor Junction Box': ['Main Gate', 'Jokatte Gate', 'E2 Gate', 'Railway Sliding'],
+    'Racks (12U)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'Railway Sliding'],
+    'Outdoor Junction Boxes': ['Main Gate', 'Jokatte Gate', 'E2 Gate', 'Railway Sliding'],
     'Portable face readers (buses)': ['Main Gate','LP Gate','Jokatte Gate'],
     'Portable face readers (gates)': ['Main Gate','LP Gate','Jokatte Gate'],
     '10 finger enrolment readers':['Main Gate','LP Gate','Jokatte Gate'],
-    'Speed Track Display':[],
+    'Speed Track Displays':[],
     // 'Indoor signages': ['Main Gate', 'Jokatte Gate', 'E2 Gate', 'Railway Siding'],
-    'Wireless Access Point': ['Jokatte Gate','Railway Sliding'],
-    'Video Conferencing Solution': ['Main Gate: Security Check Building','Main Gate: Command Centre Building'],
-    'Smart Rack': ['Main Gate'], //switches
+    'Wireless Access Points': ['Jokatte Gate','Railway Sliding'],
+    'Video Conferencing Solutions': ['Main Gate: Security Check Building','Main Gate: Command Centre Building'],
+    'Switches': ['Main Gate'],
     // 'Diesel Generator Set': ['Main Gate', 'Cargo Gate']
 };
 
@@ -3293,63 +3299,63 @@ function showShiftData(shift) {
     
     if (shift === 'shiftA') {
         shiftName = 'Shift A';
-        shiftTime = '06:00 - 14:00';
+        shiftTime = '05:00 - 13:00';
         employeeData = [
-            { empId: 'EMP-2456', time: '06:15', gate: 'Main Gate' },
-            { empId: 'EMP-3789', time: '06:20', gate: 'Main Gate' },
-            { empId: 'EMP-1234', time: '06:25', gate: 'LP Gate' },
-            { empId: 'EMP-5678', time: '06:30', gate: 'Main Gate' },
-            { empId: 'EMP-9012', time: '06:35', gate: 'E2 Gate' },
-            { empId: 'EMP-2345', time: '06:40', gate: 'Jokatte Gate' },
-            { empId: 'EMP-6789', time: '06:45', gate: 'Main Gate' },
-            { empId: 'EMP-4567', time: '06:50', gate: 'LP Gate' },
-            { empId: 'EMP-7890', time: '06:55', gate: 'Cargo Gate' },
-            { empId: 'EMP-1357', time: '07:00', gate: 'Main Gate' }
+            { empId: 'EMP-2456', time: '04:52', gate: 'Main Gate' },
+            { empId: 'EMP-3789', time: '04:55', gate: 'Main Gate' },
+            { empId: 'EMP-1234', time: '04:57', gate: 'LP Gate' },
+            { empId: 'EMP-5678', time: '04:58', gate: 'Main Gate' },
+            { empId: 'EMP-9012', time: '05:00', gate: 'E2 Gate' },
+            { empId: 'EMP-2345', time: '05:01', gate: 'Jokatte Gate' },
+            { empId: 'EMP-6789', time: '05:02', gate: 'Main Gate' },
+            { empId: 'EMP-4567', time: '05:03', gate: 'LP Gate' },
+            { empId: 'EMP-7890', time: '05:07', gate: 'Cargo Gate' },
+            { empId: 'EMP-1357', time: '05:12', gate: 'Main Gate' }
         ];
     } else if (shift === 'shiftB') {
         shiftName = 'Shift B';
-        shiftTime = '14:00 - 22:00';
+        shiftTime = '13:00 - 21:00';
         employeeData = [
-            { empId: 'EMP-8901', time: '14:05', gate: 'Main Gate' },
-            { empId: 'EMP-2468', time: '14:10', gate: 'LP Gate' },
-            { empId: 'EMP-1357', time: '14:15', gate: 'Main Gate' },
-            { empId: 'EMP-9753', time: '14:20', gate: 'Jokatte Gate' },
-            { empId: 'EMP-8642', time: '14:25', gate: 'E2 Gate' },
-            { empId: 'EMP-7531', time: '14:30', gate: 'Main Gate' },
-            { empId: 'EMP-6420', time: '14:35', gate: 'Cargo Gate' },
-            { empId: 'EMP-5319', time: '14:40', gate: 'LP Gate' },
-            { empId: 'EMP-4208', time: '14:45', gate: 'Main Gate' },
-            { empId: 'EMP-3197', time: '14:50', gate: 'Jokatte Gate' }
+            { empId: 'EMP-8901', time: '12:55', gate: 'Main Gate' },
+            { empId: 'EMP-2468', time: '12:57', gate: 'LP Gate' },
+            { empId: 'EMP-1357', time: '12:58', gate: 'Main Gate' },
+            { empId: 'EMP-9753', time: '13:00', gate: 'Jokatte Gate' },
+            { empId: 'EMP-8642', time: '13:01', gate: 'E2 Gate' },
+            { empId: 'EMP-7531', time: '13:02', gate: 'Main Gate' },
+            { empId: 'EMP-6420', time: '13:03', gate: 'Cargo Gate' },
+            { empId: 'EMP-5319', time: '13:05', gate: 'LP Gate' },
+            { empId: 'EMP-4208', time: '13:08', gate: 'Main Gate' },
+            { empId: 'EMP-3197', time: '13:15', gate: 'Jokatte Gate' }
         ];
     } else if (shift === 'shiftC') {
         shiftName = 'Shift C';
-        shiftTime = '22:00 - 06:00';
+        shiftTime = '21:00 - 05:00';
         employeeData = [
-            { empId: 'EMP-2086', time: '22:05', gate: 'Main Gate' },
-            { empId: 'EMP-1975', time: '22:10', gate: 'LP Gate' },
-            { empId: 'EMP-8864', time: '22:15', gate: 'Main Gate' },
-            { empId: 'EMP-7753', time: '22:20', gate: 'E2 Gate' },
-            { empId: 'EMP-6642', time: '22:25', gate: 'Main Gate' },
-            { empId: 'EMP-5531', time: '22:30', gate: 'Jokatte Gate' },
-            { empId: 'EMP-4420', time: '22:35', gate: 'LP Gate' },
-            { empId: 'EMP-3319', time: '22:40', gate: 'Main Gate' },
-            { empId: 'EMP-2208', time: '22:45', gate: 'Cargo Gate' },
-            { empId: 'EMP-1197', time: '22:50', gate: 'Main Gate' }
+            { empId: 'EMP-2086', time: '20:55', gate: 'Main Gate' },
+            { empId: 'EMP-1975', time: '20:57', gate: 'LP Gate' },
+            { empId: 'EMP-8864', time: '20:58', gate: 'Main Gate' },
+            { empId: 'EMP-7753', time: '21:00', gate: 'E2 Gate' },
+            { empId: 'EMP-6642', time: '21:01', gate: 'Main Gate' },
+            { empId: 'EMP-5531', time: '21:02', gate: 'Jokatte Gate' },
+            { empId: 'EMP-4420', time: '21:03', gate: 'LP Gate' },
+            { empId: 'EMP-3319', time: '21:06', gate: 'Main Gate' },
+            { empId: 'EMP-2208', time: '21:10', gate: 'Cargo Gate' },
+            { empId: 'EMP-1197', time: '21:18', gate: 'Main Gate' }
         ];
     } else if (shift === 'general') {
         shiftName = 'General Shift';
-        shiftTime = '09:00 - 18:00';
+        shiftTime = '09:00 - 17:00';
         employeeData = [
-            { empId: 'EMP-5001', time: '09:05', gate: 'Main Gate' },
-            { empId: 'EMP-5002', time: '09:10', gate: 'Main Gate' },
-            { empId: 'EMP-5003', time: '09:15', gate: 'LP Gate' },
-            { empId: 'EMP-5004', time: '09:20', gate: 'Main Gate' },
-            { empId: 'EMP-5005', time: '09:25', gate: 'Jokatte Gate' },
-            { empId: 'EMP-5006', time: '09:30', gate: 'Main Gate' },
-            { empId: 'EMP-5007', time: '09:35', gate: 'E2 Gate' },
-            { empId: 'EMP-5008', time: '09:40', gate: 'Main Gate' },
-            { empId: 'EMP-5009', time: '09:45', gate: 'LP Gate' },
-            { empId: 'EMP-5010', time: '09:50', gate: 'Main Gate' }
+            { empId: 'EMP-5001', time: '08:45', gate: 'Main Gate' },
+            { empId: 'EMP-5002', time: '08:40', gate: 'Main Gate' },
+            { empId: 'EMP-5003', time: '08:45', gate: 'LP Gate' },
+            { empId: 'EMP-5004', time: '08:52', gate: 'Main Gate' },
+            { empId: 'EMP-5005', time: '08:55', gate: 'Jokatte Gate' },
+            { empId: 'EMP-5006', time: '08:50', gate: 'Main Gate' },
+            { empId: 'EMP-5007', time: '08:55', gate: 'E2 Gate' },
+            { empId: 'EMP-5008', time: '08:40', gate: 'Main Gate' },
+            { empId: 'EMP-5009', time: '09:03', gate: 'LP Gate' },
+            { empId: 'EMP-5010', time: '09:05', gate: 'Main Gate' }
         ];
     }
     

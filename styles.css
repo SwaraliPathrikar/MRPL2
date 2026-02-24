@@ -730,6 +730,7 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
+    pointer-events: auto;
 }
 
 .device-card {
@@ -742,6 +743,7 @@ body {
     text-align: center;
     cursor: pointer;
     position: relative;
+    pointer-events: auto;
 }
 
 .device-card:hover {
