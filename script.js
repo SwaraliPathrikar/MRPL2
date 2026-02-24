@@ -1956,7 +1956,7 @@ const deviceGateLocations = {
     'Visitor Kiosks': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
     '32" Overhead Displays':  ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     'Indoor Digital Displays': ['Main Gate', 'LP Gate', 'Cargo Gate'],
-    'Outdoor Digital Displays': ['Main Gate', 'LP Gate', 'Cargo Gate'],
+    'Outdoor Digital Displays': ['Main Gate: Entry','Main Gate: Workshop Junction', 'LP Gate: Entry','LP Gate: Exit','Cargo Gate: Vehicle Parking Area','Cargo Gate: Betaland', 'Jokatte Gate: Entry','Jokatte Gate: Parking Area (CL Area)','Jokatte Gate: Parking Area (Near Plant Gate)'],
     'Video Wall (6 x 3)': ['Main Gate: Command Centre'],
     'Video Wall (2 x 3)': ['PCR (Plant Gate)'],
     'Door Frame Metal Detectors (DFMD)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
