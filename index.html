@@ -158,30 +158,34 @@
         
         <!-- Real-time Security Operations KPIs -->
         <div class="kpi-grid">
-            <div class="kpi-card highlight" onclick="showKPIDetails('vehicleEntries')" style="cursor: pointer;">
+            <div class="kpi-card highlight" onclick="showKPIDetails('vehicleEntries')" style="cursor: pointer; position: relative;">
                 <div class="kpi-value live-counter" id="vehicleEntriesToday">1,250</div>
                 <div class="kpi-label">Total Entries Today</div>
                 <div class="kpi-sublabel">Vehicles (ANPR Tracked)</div>
+                <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
             </div>
             <div class="kpi-card highlight">
                 <div class="kpi-value live-counter" id="personnelInside">2,840</div>
                 <div class="kpi-label">Total Entries Today</div>
                 <div class="kpi-sublabel">Active Personnel Inside Refinery (FR Tracked)</div>
             </div>
-            <div class="kpi-card status-good" onclick="showKPIDetails('accessGranted')" style="cursor: pointer;">
+            <div class="kpi-card status-good" onclick="showKPIDetails('accessGranted')" style="cursor: pointer; position: relative;">
                 <div class="kpi-value" id="accessGranted">3,720</div>
                 <div class="kpi-label">Access Granted Today</div>
                 <div class="kpi-sublabel">All Gates Combined</div>
+                <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
             </div>
-            <div class="kpi-card status-warning" onclick="showKPIDetails('accessDenied')" style="cursor: pointer;">
+            <div class="kpi-card status-warning" onclick="showKPIDetails('accessDenied')" style="cursor: pointer; position: relative;">
                 <div class="kpi-value" id="accessDenied">28</div>
                 <div class="kpi-label">Denied Access Attempts</div>
                 <div class="kpi-sublabel">Unauthorized / Expired Badge</div>
+                <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
             </div>
-            <div class="kpi-card" onclick="showKPIDetails('specialEntries')" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3);">
+            <div class="kpi-card" onclick="showKPIDetails('specialEntries')" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3); position: relative;">
                 <div class="kpi-value" id="specialEntries" style="color: #ffaa00;">18</div>
                 <div class="kpi-label">Special Entries</div>
                 <div class="kpi-sublabel">Without Pass / Emergency</div>
+                <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
             </div>
         </div>
         
@@ -197,48 +201,54 @@
             <!-- Incident Tracking Row -->
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
                 <!-- Total Incidents Today -->
-                <div onclick="showIncidentsByType('today')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                <div onclick="showIncidentsByType('today')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Incidents Today</div>
                     <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1;">12</div>
                     <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">8 Closed / 4 Open</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
                 <!-- Total Incidents This Week -->
-                <div onclick="showIncidentsByType('week')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                <div onclick="showIncidentsByType('week')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Incidents This Week</div>
                     <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1;">47</div>
                     <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">38 Closed / 9 Open</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
                 <!-- Total Incidents This Month -->
-                <div onclick="showIncidentsByType('month')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                <div onclick="showIncidentsByType('month')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Incidents This Month</div>
                     <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1;">184</div>
                     <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">165 Closed / 19 Open</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
             </div>
             
             <!-- Incident Details & Safety Violations Row -->
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1rem;">
                 <!-- Open Incidents -->
-                <div onclick="showIncidentDetailsCard('open')" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 170, 0, 0.2) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                <div onclick="showIncidentDetailsCard('open')" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 170, 0, 0.2) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Open Incidents</div>
                     <div style="font-size: 3rem; color: #ffaa00; font-weight: bold; line-height: 1;">4</div>
                     <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">Avg: 25 min</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
                 <!-- Closed Incidents -->
-                <div onclick="showIncidentDetailsCard('closed')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                <div onclick="showIncidentDetailsCard('closed')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Closed Today</div>
                     <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">8</div>
                     <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">Avg: 18 min</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
                 <!-- SLA Compliance -->
-                <div onclick="showSLABreachDetails()" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                <div onclick="showSLABreachDetails()" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">SLA Compliance</div>
                     <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">83%</div>
                     <div style="font-size: 0.75rem; color: #ff3366; margin-top: 0.5rem;">2 Breaches Today</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
                 <!-- Speed Violations -->
