@@ -185,14 +185,71 @@
             </div>
         </div>
         
-        <!-- Safety Violation Analytics -->
+        <!-- Incident Management & Safety Violations -->
         <div class="card" style="margin-top: 2rem;">
-            <h3>Safety Violation Analytics</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>Incident Management & Safety Violations</h3>
+                <button onclick="showSLABreachReportOptions()" style="background: linear-gradient(135deg, #ff3366 0%, #ff6b9d 100%); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                    Download SLA Breach Report
+                </button>
+            </div>
+            
+            <!-- Incident Tracking Row -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                <!-- Total Incidents Today -->
+                <div onclick="showIncidentsByType('today')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Incidents Today</div>
+                    <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1;">12</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">8 Closed / 4 Open</div>
+                </div>
+                
+                <!-- Total Incidents This Week -->
+                <div onclick="showIncidentsByType('week')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Incidents This Week</div>
+                    <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1;">47</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">38 Closed / 9 Open</div>
+                </div>
+                
+                <!-- Total Incidents This Month -->
+                <div onclick="showIncidentsByType('month')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Incidents This Month</div>
+                    <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1;">184</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">165 Closed / 19 Open</div>
+                </div>
+            </div>
+            
+            <!-- Incident Details & Safety Violations Row -->
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1rem;">
-                <div style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                <!-- Open Incidents -->
+                <div onclick="showIncidentDetailsCard('open')" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 170, 0, 0.2) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Open Incidents</div>
+                    <div style="font-size: 3rem; color: #ffaa00; font-weight: bold; line-height: 1;">4</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">Avg: 25 min</div>
+                </div>
+                
+                <!-- Closed Incidents -->
+                <div onclick="showIncidentDetailsCard('closed')" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Closed Today</div>
+                    <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">8</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">Avg: 18 min</div>
+                </div>
+                
+                <!-- SLA Compliance -->
+                <div onclick="showSLABreachDetails()" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">SLA Compliance</div>
+                    <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">83%</div>
+                    <div style="font-size: 0.75rem; color: #ff3366; margin-top: 0.5rem;">2 Breaches Today</div>
+                </div>
+                
+                <!-- Speed Violations -->
+                <!-- <div style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Speed Violations</div>
                     <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1;">8</div>
-                </div>
+                </div> -->
+            </div>
+            
+            <!-- Second Row - Safety Violations -->
+            <!-- <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
                 <div style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">No Riding Helmet</div>
                     <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1;">3</div>
@@ -201,15 +258,11 @@
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">No PPE Kit</div>
                     <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1;">1</div>
                 </div>
-                <!-- <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Unauthorized Entry</div>
-                    <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">0</div>
-                </div> -->
                 <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Tailgating</div>
                     <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">0</div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- Gate-wise Live Operations -->

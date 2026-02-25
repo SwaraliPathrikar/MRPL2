@@ -1538,46 +1538,46 @@ const deviceIcons = {
 // All devices from BOQ
 const allBOQDevices = [
     { type: 'Gates', total: 8, online: 8, offline: 0 },
-    { type: 'Automatic Tyre Killers', total: 8, online: 8, offline: 0 },
-    { type: 'Under Vehicle Surveillance Systems (UVSS)', total: 4, online: 4, offline: 0 },
-    { type: 'Bollards', total: 28, online: 28, offline: 0 },
-    { type: 'Boom Barriers', total: 18, online: 18, offline: 0 },
-    { type: 'Swing Barriers', total: 12, online: 12, offline: 0 },
-    { type: 'Visitor Kiosks', total: 8, online: 7, offline: 1 },
-    { type: '32" Overhead Displays', total: 15, online: 15, offline: 0 },
-    { type: 'Indoor Digital Displays', total: 25, online: 24, offline: 1 },
-    { type: 'Outdoor Digital Displays', total: 18, online: 17, offline: 1 },
+    { type: 'Automatic Tyre Killers', total: 3, online: 3, offline: 0 },
+    { type: 'Under Vehicle Surveillance Systems (UVSS)', total: 6, online: 6, offline: 0 },
+    { type: 'Bollards', total: 24, online: 24, offline: 0 },
+    { type: 'Boom Barriers', total: 30, online: 30, offline: 0 },
+    { type: 'Swing Barriers', total: 24, online: 24, offline: 0 },
+    { type: 'Visitor Kiosks', total: 6, online: 5, offline: 1 },
+    { type: '32" Overhead Displays', total: 19, online: 19, offline: 0 },
+    { type: 'Indoor Digital Displays', total: 8, online: 7, offline: 1 },
+    { type: 'Outdoor Digital Displays', total: 9, online: 8, offline: 1 },
     { type: 'Video Wall (6 x 3)', total: 1, online: 1, offline: 0 },
     { type: 'Video Wall (2 x 3)', total: 1, online: 1, offline: 0 },
-    { type: 'Door Frame Metal Detectors (DFMD)', total: 12, online: 12, offline: 0 },
+    { type: 'Door Frame Metal Detectors (DFMD)', total: 15, online: 15, offline: 0 },
     { type: 'Baggage Scanners', total: 8, online: 8, offline: 0 },
     // { type: 'Frisking Booths', total: 10, online: 10, offline: 0 },
-    { type: 'Long Range RFID Readers', total: 35, online: 35, offline: 0 },
-    { type: 'Push Button for Boom Barriers', total: 18, online: 18, offline: 0 },
-    { type: 'Electro Magnetic Locks', total: 24, online: 24, offline: 0 },
-    { type: 'Indoor Dome Cameras- 5 MP', total: 120, online: 114, offline: 6 },
-    { type: 'Outdoor Fixed Cameras- 5 MP', total: 150, online: 143, offline: 7 },
-    { type: 'PTZ with IR - 2MP', total: 45, online: 43, offline: 2 },
-    { type: 'Panoramic Cameras- 180° - 20 MP', total: 30, online: 29, offline: 1 },
-    { type: 'Panoramic Cameras- 360° - 20 MP', total: 25, online: 24, offline: 1 },
-    { type: 'ANPR Cameras', total: 42, online: 40, offline: 2 },
-    { type: 'Face recognition Cameras', total: 75, online: 71, offline: 4 },
-    { type: 'IP Horn Speakers', total: 30, online: 30, offline: 0 },
-    { type: 'IP Ceiling Speakers', total: 40, online: 40, offline: 0 },
-    { type: 'Master & Local Control Desks', total: 8, online: 8, offline: 0 },
-    { type: 'Face recognition Readers', total: 45, online: 44, offline: 1 },
+    { type: 'Long Range RFID Readers', total: 30, online: 30, offline: 0 },
+    { type: 'Push Button for Boom Barriers', total: 30, online: 30, offline: 0 },
+    { type: 'Electro Magnetic Locks', total: 7, online: 7, offline: 0 },
+    { type: 'Indoor Dome Cameras- 5 MP', total: 114, online: 108, offline: 6 },
+    { type: 'Outdoor Fixed Cameras- 5 MP', total: 107, online: 100, offline: 7 },
+    { type: 'PTZ with IR - 2MP', total: 6, online: 4, offline: 2 },
+    { type: 'Panoramic Cameras- 180° - 20 MP', total: 9, online: 8, offline: 1 },
+    { type: 'Panoramic Cameras- 360° - 20 MP', total: 22, online: 21, offline: 1 },
+    { type: 'ANPR Cameras', total: 20, online: 18, offline: 2 },
+    { type: 'Face recognition Cameras', total: 25, online: 21, offline: 4 },
+    { type: 'IP Horn Speakers', total: 86, online: 86, offline: 0 },
+    { type: 'IP Ceiling Speakers', total: 80, online: 80, offline: 0 },
+    { type: 'Master & Local Control Desks', total: 7, online: 7, offline: 0 },
+    { type: 'Face recognition Readers', total: 48, online: 47, offline: 1 },
     // { type: 'Smart Card Readers', total: 50, online: 50, offline: 0 },
-    { type: 'QR Code Readers', total: 30, online: 30, offline: 0 },
+    { type: 'QR Code Readers', total: 48, online: 48, offline: 0 },
     // { type: 'Camera Poles', total: 85, online: 85, offline: 0 },
-    { type: 'Racks (12U)', total: 15, online: 15, offline: 0 },
-    { type: 'Outdoor Junction Boxes', total: 60, online: 60, offline: 0 },
+    { type: 'Racks (12U)', total: 19, online: 19, offline: 0 },
+    { type: 'Outdoor Junction Boxes', total: 47, online: 47, offline: 0 },
     { type: 'Portable face readers (buses)', total: 20, online: 20, offline: 0 },
-    { type: 'Portable face readers (gates)', total: 8, online: 8, offline: 0 },
-    { type: '10 finger enrolment readers', total: 12, online: 12, offline: 0 },
+    { type: 'Portable face readers (gates)', total: 4, online: 4, offline: 0 },
+    { type: '10 finger enrolment readers', total: 4, online: 4, offline: 0 },
     { type: 'Speed Track Displays', total: 0, online: 0, offline: 0 },
     // { type: 'Indoor signages', total: 50, online: 50, offline: 0 },
-    { type: 'Wireless Access Points', total: 40, online: 40, offline: 0 },
-    { type: 'Video Conferencing Solutions', total: 4, online: 4, offline: 0 },
+    { type: 'Wireless Access Points', total: 2, online: 2, offline: 0 },
+    { type: 'Video Conferencing Solutions', total: 2, online: 2, offline: 0 },
     { type: 'Switches', total: 8, online: 8, offline: 0 },
     // { type: 'Diesel Generator Set', total: 2, online: 2, offline: 0 }
 ];
@@ -2892,6 +2892,577 @@ function showKPIDetails(type) {
     modal.style.display = 'block';
 }
 
+// Show Incident Details
+function showIncidentDetails(period) {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    let title = '';
+    let incidents = [];
+    
+    if (period === 'today') {
+        title = 'Incidents Today - Details';
+        incidents = [
+            { time: '14:35', type: 'Speed Violation', location: 'Main Gate Entry', status: 'Closed', severity: 'Low', sla: '30 min', resolution: '15 min', breach: false },
+            { time: '13:20', type: 'Unauthorized Access', location: 'LP Gate', status: 'Open', severity: 'High', sla: '15 min', resolution: '35 min', breach: false },
+            { time: '12:15', type: 'No Riding Helmet', location: 'Jokatte Gate', status: 'Closed', severity: 'Medium', sla: '20 min', resolution: '12 min', breach: false },
+            { time: '11:45', type: 'Tailgating', location: 'Main Gate', status: 'Closed', severity: 'Medium', sla: '20 min', resolution: '18 min', breach: false },
+            { time: '10:30', type: 'Speed Violation', location: 'Cargo Gate', status: 'Closed', severity: 'Low', sla: '30 min', resolution: '25 min', breach: false },
+            { time: '09:50', type: 'No PPE Kit', location: 'E2 Gate', status: 'Open', severity: 'High', sla: '15 min', resolution: '28 min', breach: false },
+            { time: '09:15', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', severity: 'Low', sla: '30 min', resolution: '22 min', breach: false },
+            { time: '08:40', type: 'Expired Badge', location: 'LP Gate', status: 'Closed', severity: 'Medium', sla: '20 min', resolution: '35 min', breach: true },
+            { time: '08:10', type: 'Speed Violation', location: 'Jokatte Gate', status: 'Open', severity: 'Low', sla: '30 min', resolution: '18 min', breach: false },
+            { time: '07:55', type: 'Unauthorized Vehicle', location: 'Main Gate', status: 'Closed', severity: 'High', sla: '15 min', resolution: '22 min', breach: true },
+            { time: '07:20', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', severity: 'Low', sla: '30 min', resolution: '16 min', breach: false },
+            { time: '06:45', type: 'No Riding Helmet', location: 'LP Gate', status: 'Open', severity: 'Medium', sla: '20 min', resolution: '14 min', breach: false }
+        ];
+    } else if (period === 'week') {
+        title = 'Incidents This Week - Summary';
+        incidents = [
+            { date: 'Today', total: 12, closed: 8, open: 4, critical: 2, breaches: 2 },
+            { date: 'Yesterday', total: 15, closed: 13, open: 2, critical: 1, breaches: 1 },
+            { date: 'Feb 22', total: 8, closed: 7, open: 1, critical: 0, breaches: 0 },
+            { date: 'Feb 21', total: 6, closed: 5, open: 1, critical: 1, breaches: 1 },
+            { date: 'Feb 20', total: 4, closed: 3, open: 1, critical: 0, breaches: 0 },
+            { date: 'Feb 19', total: 2, closed: 2, open: 0, critical: 0, breaches: 0 }
+        ];
+    } else {
+        title = 'Incidents This Month - Summary';
+        incidents = [
+            { week: 'Week 4 (Feb 18-24)', total: 47, closed: 38, open: 9, critical: 4, breaches: 8 },
+            { week: 'Week 3 (Feb 11-17)', total: 52, closed: 48, open: 4, critical: 2, breaches: 5 },
+            { week: 'Week 2 (Feb 4-10)', total: 45, closed: 42, open: 3, critical: 1, breaches: 4 },
+            { week: 'Week 1 (Feb 1-3)', total: 40, closed: 37, open: 3, critical: 2, breaches: 3 }
+        ];
+    }
+    
+    let content = '<div style="max-height: 500px; overflow-y: auto;"><table class="data-table">';
+    
+    if (period === 'today') {
+        content += `<thead><tr>
+            <th>Time</th>
+            <th>Incident Type</th>
+            <th>Location</th>
+            <th>SLA</th>
+            <th>Resolution Time</th>
+            <th>Status</th>
+        </tr></thead><tbody>`;
+        
+        incidents.forEach(inc => {
+            const statusColor = inc.status === 'Open' ? '#ffaa00' : '#00ff88';
+            const breachColor = inc.breach ? '#ff3366' : '#00ff88';
+            const breachText = inc.breach ? ' BREACH' : '✓ On Time';
+            content += `<tr>
+                <td>${inc.time}</td>
+                <td>${inc.type}</td>
+                <td>${inc.location}</td>
+                <td>${inc.sla}</td>
+                <td style="color: ${breachColor};">${inc.resolution} ${inc.breach ? breachText : ''}</td>
+                <td style="color: ${statusColor}; font-weight: 600;">${inc.status}</td>
+            </tr>`;
+        });
+    } else if (period === 'week') {
+        content += `<thead><tr>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Closed</th>
+            <th>Open</th>
+            <th>Critical</th>
+            <th>SLA Breaches</th>
+        </tr></thead><tbody>`;
+        
+        incidents.forEach(inc => {
+            content += `<tr>
+                <td>${inc.date}</td>
+                <td>${inc.total}</td>
+                <td style="color: #00ff88;">${inc.closed}</td>
+                <td style="color: #ffaa00;">${inc.open}</td>
+                <td style="color: #ff3366;">${inc.critical}</td>
+                <td style="color: ${inc.breaches > 0 ? '#ff3366' : '#00ff88'};">${inc.breaches}</td>
+            </tr>`;
+        });
+    } else {
+        content += `<thead><tr>
+            <th>Week</th>
+            <th>Total</th>
+            <th>Closed</th>
+            <th>Open</th>
+            <th>Critical</th>
+            <th>SLA Breaches</th>
+        </tr></thead><tbody>`;
+        
+        incidents.forEach(inc => {
+            content += `<tr>
+                <td>${inc.week}</td>
+                <td>${inc.total}</td>
+                <td style="color: #00ff88;">${inc.closed}</td>
+                <td style="color: #ffaa00;">${inc.open}</td>
+                <td style="color: #ff3366;">${inc.critical}</td>
+                <td style="color: ${inc.breaches > 0 ? '#ff3366' : '#00ff88'};">${inc.breaches}</td>
+            </tr>`;
+        });
+    }
+    
+    content += '</tbody></table></div>';
+    
+    modalTitle.textContent = title;
+    modalBody.innerHTML = content;
+    modal.style.display = 'block';
+}
+
+// Show Incident Details from Card
+function showIncidentDetailsCard(type) {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    let title = '';
+    let content = '';
+    
+    const allIncidents = [
+        { time: '14:35', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', sla: '30 min', resolution: '15 min', breach: false },
+        { time: '13:20', type: 'Unauthorized Access', location: 'LP Gate', status: 'Open', sla: '15 min', resolution: '35 min (ongoing)', breach: false },
+        { time: '12:15', type: 'No Riding Helmet', location: 'Jokatte Gate', status: 'Closed', sla: '20 min', resolution: '12 min', breach: false },
+        { time: '11:45', type: 'Tailgating', location: 'Main Gate', status: 'Closed', sla: '20 min', resolution: '18 min', breach: false },
+        { time: '10:30', type: 'Speed Violation', location: 'Cargo Gate', status: 'Closed', sla: '30 min', resolution: '25 min', breach: false },
+        { time: '09:50', type: 'No PPE Kit', location: 'E2 Gate', status: 'Open', sla: '15 min', resolution: '28 min (ongoing)', breach: false },
+        { time: '09:15', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', sla: '30 min', resolution: '22 min', breach: false },
+        { time: '08:40', type: 'Expired Badge', location: 'LP Gate', status: 'Closed', sla: '20 min', resolution: '35 min', breach: true },
+        { time: '08:10', type: 'Speed Violation', location: 'Jokatte Gate', status: 'Open', sla: '30 min', resolution: '18 min (ongoing)', breach: false },
+        { time: '07:55', type: 'Unauthorized Vehicle', location: 'Main Gate', status: 'Closed', sla: '15 min', resolution: '22 min', breach: true },
+        { time: '07:20', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', sla: '30 min', resolution: '16 min', breach: false },
+        { time: '06:45', type: 'No Riding Helmet', location: 'LP Gate', status: 'Open', sla: '20 min', resolution: '14 min (ongoing)', breach: false }
+    ];
+    
+    let incidents = [];
+    if (type === 'today') {
+        title = 'All Incidents Today';
+        incidents = allIncidents;
+    } else if (type === 'open') {
+        title = 'Open Incidents';
+        incidents = allIncidents.filter(inc => inc.status === 'Open');
+    } else if (type === 'closed') {
+        title = 'Closed Incidents Today';
+        incidents = allIncidents.filter(inc => inc.status === 'Closed');
+    }
+    
+    content = '<div style="max-height: 500px; overflow-y: auto;"><table class="data-table"><thead><tr>';
+    content += '<th>Time</th><th>Type</th><th>Location</th><th>SLA</th><th>Resolution</th><th>Status</th>';
+    content += '</tr></thead><tbody>';
+    
+    incidents.forEach(inc => {
+        const statusColor = inc.status === 'Open' ? '#ffaa00' : '#00ff88';
+        const breachColor = inc.breach ? '#ff3366' : '#00ff88';
+        content += `<tr>
+            <td>${inc.time}</td>
+            <td>${inc.type}</td>
+            <td>${inc.location}</td>
+            <td>${inc.sla}</td>
+            <td style="color: ${breachColor};">${inc.resolution}${inc.breach ? ' ⚠️' : ''}</td>
+            <td style="color: ${statusColor};">${inc.status}</td>
+        </tr>`;
+    });
+    
+    content += '</tbody></table></div>';
+    
+    modalTitle.textContent = title;
+    modalBody.innerHTML = content;
+    modal.style.display = 'block';
+}
+
+// Show Incidents By Type with Filter
+function showIncidentsByType(period) {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    const allIncidents = [
+        { time: '14:35', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', sla: '30 min', resolution: '15 min', breach: false },
+        { time: '13:20', type: 'Unauthorized Access', location: 'LP Gate', status: 'Open', sla: '15 min', resolution: '35 min (ongoing)', breach: false },
+        { time: '12:15', type: 'No Riding Helmet', location: 'Jokatte Gate', status: 'Closed', sla: '20 min', resolution: '12 min', breach: false },
+        { time: '11:45', type: 'Tailgating', location: 'Main Gate', status: 'Closed', sla: '20 min', resolution: '18 min', breach: false },
+        { time: '10:30', type: 'Speed Violation', location: 'Cargo Gate', status: 'Closed', sla: '30 min', resolution: '25 min', breach: false },
+        { time: '09:50', type: 'No PPE Kit', location: 'E2 Gate', status: 'Open', sla: '15 min', resolution: '28 min (ongoing)', breach: false },
+        { time: '09:15', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', sla: '30 min', resolution: '22 min', breach: false },
+        { time: '08:40', type: 'Expired Badge', location: 'LP Gate', status: 'Closed', sla: '20 min', resolution: '35 min', breach: true },
+        { time: '08:10', type: 'Speed Violation', location: 'Jokatte Gate', status: 'Open', sla: '30 min', resolution: '18 min (ongoing)', breach: false },
+        { time: '07:55', type: 'Unauthorized Vehicle', location: 'Main Gate', status: 'Closed', sla: '15 min', resolution: '22 min', breach: true },
+        { time: '07:20', type: 'Speed Violation', location: 'Main Gate', status: 'Closed', sla: '30 min', resolution: '16 min', breach: false },
+        { time: '06:45', type: 'No Riding Helmet', location: 'LP Gate', status: 'Open', sla: '20 min', resolution: '14 min (ongoing)', breach: false }
+    ];
+    
+    let title = period === 'today' ? 'Incidents Today' : period === 'week' ? 'Incidents This Week' : 'Incidents This Month';
+    
+    modalTitle.textContent = title;
+    
+    let content = `
+        <div style="margin-bottom: 15px;">
+            <label style="color: #00d4ff; margin-right: 10px;">Filter by Type:</label>
+            <select id="incidentTypeFilter" onchange="filterIncidentsByType()" style="padding: 0.5rem; background: #2d3561; color: #fff; border: 1px solid #00d4ff; border-radius: 6px;">
+                <option value="all">All Incidents</option>
+                <option value="Speed Violation">Speed Violation</option>
+                <option value="Unauthorized Access">Unauthorized Access</option>
+                <option value="No Riding Helmet">No Riding Helmet</option>
+                <option value="No PPE Kit">No PPE Kit</option>
+                <option value="Tailgating">Tailgating</option>
+                <option value="Expired Badge">Expired Badge</option>
+                <option value="Unauthorized Vehicle">Unauthorized Vehicle</option>
+            </select>
+        </div>
+        <div id="filteredIncidentsTable" style="max-height: 500px; overflow-y: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>SLA</th>
+                        <th>Resolution</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="incidentTableBody">
+    `;
+    
+    allIncidents.forEach(inc => {
+        const statusColor = inc.status === 'Open' ? '#ffaa00' : '#00ff88';
+        const breachColor = inc.breach ? '#ff3366' : '#00ff88';
+        content += `<tr data-type="${inc.type}">
+            <td>${inc.time}</td>
+            <td>${inc.type}</td>
+            <td>${inc.location}</td>
+            <td>${inc.sla}</td>
+            <td style="color: ${breachColor};">${inc.resolution}${inc.breach ? ' ⚠️' : ''}</td>
+            <td style="color: ${statusColor};">${inc.status}</td>
+        </tr>`;
+    });
+    
+    content += `
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    modalBody.innerHTML = content;
+    modal.style.display = 'block';
+}
+
+// Filter incidents by type
+function filterIncidentsByType() {
+    const filterValue = document.getElementById('incidentTypeFilter').value;
+    const rows = document.querySelectorAll('#incidentTableBody tr');
+    
+    rows.forEach(row => {
+        if (filterValue === 'all' || row.getAttribute('data-type') === filterValue) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// Show SLA Breach Report Options
+function showSLABreachReportOptions() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+    
+    modal.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 2rem; border-radius: 12px; border: 2px solid #00d4ff; max-width: 500px; width: 90%;">
+            <h3 style="color: #00d4ff; margin-bottom: 1.5rem;">Download SLA Breach Report</h3>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <button onclick="downloadSLABreachReport('today')" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                    Today's Report
+                </button>
+                <button onclick="downloadSLABreachReport('week')" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                    This Week's Report
+                </button>
+                <button onclick="downloadSLABreachReport('month')" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                    This Month's Report
+                </button>
+                <button onclick="showCustomDateRange()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #ff3366 0%, #ff6b9d 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                    Custom Date Range
+                </button>
+            </div>
+            
+            <button onclick="this.closest('div').parentElement.remove()" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); color: #8b9dc3; border: 1px solid #3d4a7a; border-radius: 8px; cursor: pointer;">
+                Cancel
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Show Custom Date Range Picker
+function showCustomDateRange() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10001;';
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    modal.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 2rem; border-radius: 12px; border: 2px solid #00d4ff; max-width: 500px; width: 90%;">
+            <h3 style="color: #00d4ff; margin-bottom: 1.5rem;">Select Date Range</h3>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #8b9dc3; display: block; margin-bottom: 0.5rem;">From Date:</label>
+                <input type="date" id="fromDate" value="${today}" style="width: 100%; padding: 0.8rem; background: #2d3561; color: #fff; border: 1px solid #00d4ff; border-radius: 6px;">
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="color: #8b9dc3; display: block; margin-bottom: 0.5rem;">To Date:</label>
+                <input type="date" id="toDate" value="${today}" style="width: 100%; padding: 0.8rem; background: #2d3561; color: #fff; border: 1px solid #00d4ff; border-radius: 6px;">
+            </div>
+            
+            <button onclick="downloadCustomSLAReport()" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #ff3366 0%, #ff6b9d 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                Download Report
+            </button>
+            
+            <button onclick="this.closest('div').parentElement.remove()" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); color: #8b9dc3; border: 1px solid #3d4a7a; border-radius: 8px; cursor: pointer;">
+                Cancel
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Download Custom SLA Report
+function downloadCustomSLAReport() {
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+    
+    if (!fromDate || !toDate) {
+        alert('Please select both dates');
+        return;
+    }
+    
+    downloadSLABreachReport('custom', fromDate, toDate);
+    
+    // Close all modals
+    document.querySelectorAll('div[style*="position: fixed"]').forEach(m => m.remove());
+}
+
+// Show SLA Breach Details
+function showSLABreachDetails() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    const title = 'SLA Breach Report - Today';
+    const content = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <p style="color: #ff3366; margin-bottom: 15px; font-weight: 600;">⚠️ 2 incidents breached SLA today</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Incident Type</th>
+                        <th>Location</th>
+                        <th>SLA Target</th>
+                        <th>Actual Time</th>
+                        <th>Delay</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>08:40</td>
+                        <td>Expired Badge</td>
+                        <td>LP Gate</td>
+                        <td>20 min</td>
+                        <td style="color: #ff3366;">35 min</td>
+                        <td style="color: #ff3366; font-weight: 600;">+15 min</td>
+                    </tr>
+                    <tr>
+                        <td>07:55</td>
+                        <td>Unauthorized Vehicle</td>
+                        <td>Main Gate</td>
+                        <td>15 min</td>
+                        <td style="color: #ff3366;">22 min</td>
+                        <td style="color: #ff3366; font-weight: 600;">+7 min</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 15px; padding: 10px; background: rgba(255, 51, 102, 0.1); border-radius: 8px;">
+                <strong style="color: #ff3366;">SLA Compliance Rate:</strong> 83% (10/12 incidents resolved within SLA)
+            </div>
+        </div>
+    `;
+    
+    modalTitle.textContent = title;
+    modalBody.innerHTML = content;
+    modal.style.display = 'block';
+}
+
+// Download SLA Breach Report
+function downloadSLABreachReport(period = 'today', fromDate = null, toDate = null) {
+    const doc = new jsPDF();
+    const dateStr = new Date().toLocaleDateString();
+    
+    let reportTitle = '';
+    let dateRange = '';
+    
+    if (period === 'today') {
+        reportTitle = "Today's SLA Breach Report";
+        dateRange = dateStr;
+    } else if (period === 'week') {
+        reportTitle = "This Week's SLA Breach Report";
+        dateRange = 'Last 7 Days';
+    } else if (period === 'month') {
+        reportTitle = "This Month's SLA Breach Report";
+        dateRange = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    } else if (period === 'custom') {
+        reportTitle = "Custom SLA Breach Report";
+        dateRange = `${fromDate} to ${toDate}`;
+    }
+    
+    // Header
+    doc.setFillColor(0, 212, 255);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.text('MRPL - SLA Breach Report', 105, 15, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(reportTitle, 105, 25, { align: 'center' });
+    doc.text(`Period: ${dateRange}`, 105, 32, { align: 'center' });
+    
+    // Summary
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.text('SLA Breach Summary - Today', 14, 50);
+    
+    doc.setFontSize(10);
+    doc.text('Total Incidents: 12', 14, 60);
+    doc.text('Resolved Within SLA: 10 (83%)', 14, 67);
+    doc.setTextColor(255, 51, 102);
+    doc.text('SLA Breaches: 2 (17%)', 14, 74);
+    
+    // Table
+    doc.setTextColor(0, 0, 0);
+    doc.autoTable({
+        startY: 85,
+        head: [['Time', 'Incident Type', 'Location', 'SLA Target', 'Actual Time', 'Delay']],
+        body: [
+            ['08:40', 'Expired Badge', 'LP Gate', '20 min', '35 min', '+15 min'],
+            ['07:55', 'Unauthorized Vehicle', 'Main Gate', '15 min', '22 min', '+7 min']
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: [0, 212, 255], textColor: [255, 255, 255] },
+        styles: { fontSize: 9 },
+        columnStyles: {
+            4: { textColor: [255, 51, 102], fontStyle: 'bold' },
+            5: { textColor: [255, 51, 102], fontStyle: 'bold' }
+        }
+    });
+    
+    // SLA Standards
+    const finalY = doc.lastAutoTable.finalY + 15;
+    doc.setFontSize(12);
+    doc.text('SLA Standards:', 14, finalY);
+    doc.setFontSize(9);
+    doc.text('• High Severity (Unauthorized Access, Security Breach): 15 minutes', 14, finalY + 8);
+    doc.text('• Medium Severity (Badge Issues, PPE Violations): 20 minutes', 14, finalY + 15);
+    doc.text('• Low Severity (Speed Violations, Minor Infractions): 30 minutes', 14, finalY + 22);
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('MRPL - Integrated Security Command & Control System', 105, 285, { align: 'center' });
+    
+    doc.save(`MRPL_SLA_Breach_Report_${dateStr.replace(/\//g, '-')}.pdf`);
+}
+
+// Show CCTV System Health
+function showCCTVHealth() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    const title = 'CCTV System Health - Camera Status';
+    const content = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <p style="color: #8b9dc3; margin-bottom: 15px;">Camera operational status across all gates</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Gate</th>
+                        <th>Total Cameras</th>
+                        <th>Online</th>
+                        <th>Offline</th>
+                        <th>Health %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Main Gate</td>
+                        <td>142</td>
+                        <td style="color: #00ff88;">138</td>
+                        <td style="color: #ff3366;">4</td>
+                        <td style="color: #00ff88;">97.2%</td>
+                    </tr>
+                    <tr>
+                        <td>LP Gate</td>
+                        <td>85</td>
+                        <td style="color: #00ff88;">83</td>
+                        <td style="color: #ff3366;">2</td>
+                        <td style="color: #00ff88;">97.6%</td>
+                    </tr>
+                    <tr>
+                        <td>Jokatte Gate</td>
+                        <td>128</td>
+                        <td style="color: #00ff88;">124</td>
+                        <td style="color: #ff3366;">4</td>
+                        <td style="color: #00ff88;">96.9%</td>
+                    </tr>
+                    <tr>
+                        <td>E2 Gate</td>
+                        <td>64</td>
+                        <td style="color: #00ff88;">62</td>
+                        <td style="color: #ff3366;">2</td>
+                        <td style="color: #00ff88;">96.9%</td>
+                    </tr>
+                    <tr>
+                        <td>Cargo Gate</td>
+                        <td>98</td>
+                        <td style="color: #00ff88;">95</td>
+                        <td style="color: #ff3366;">3</td>
+                        <td style="color: #00ff88;">96.9%</td>
+                    </tr>
+                    <tr>
+                        <td>Railway Sliding</td>
+                        <td>42</td>
+                        <td style="color: #00ff88;">41</td>
+                        <td style="color: #ff3366;">1</td>
+                        <td style="color: #00ff88;">97.6%</td>
+                    </tr>
+                    <tr>
+                        <td>PCR</td>
+                        <td>40</td>
+                        <td style="color: #00ff88;">39</td>
+                        <td style="color: #ff3366;">1</td>
+                        <td style="color: #00ff88;">97.5%</td>
+                    </tr>
+                    <tr style="background: rgba(0, 212, 255, 0.1); font-weight: 600;">
+                        <td>TOTAL</td>
+                        <td>599</td>
+                        <td style="color: #00ff88;">582</td>
+                        <td style="color: #ff3366;">17</td>
+                        <td style="color: #00ff88;">97.2%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 15px; padding: 10px; background: rgba(0, 255, 136, 0.1); border-radius: 8px; color: #00ff88;">
+                <strong>System Status:</strong> Excellent - All critical areas covered
+            </div>
+        </div>
+    `;
+    
+    modalTitle.textContent = title;
+    modalBody.innerHTML = content;
+    modal.style.display = 'block';
+}
 
 
 // Show date range selector for uptime report
@@ -3556,3 +4127,117 @@ function showCategoryData(category) {
             </div>
         `;
     }
+
+
+// Initialize Charts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeIncidentCharts();
+});
+
+// Initialize Incident Analytics Charts
+function initializeIncidentCharts() {
+    // 30-Day Incident Trend Chart
+    const trendCtx = document.getElementById('incidentTrendChart');
+    if (trendCtx) {
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Feb 1', 'Feb 3', 'Feb 5', 'Feb 7', 'Feb 9', 'Feb 11', 'Feb 13', 'Feb 15', 'Feb 17', 'Feb 19', 'Feb 21', 'Feb 23', 'Feb 25'],
+                datasets: [{
+                    label: 'Total Incidents',
+                    data: [8, 6, 9, 7, 5, 10, 8, 6, 9, 4, 6, 8, 12],
+                    borderColor: '#00d4ff',
+                    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#00d4ff'
+                }, {
+                    label: 'SLA Breaches',
+                    data: [1, 0, 1, 0, 0, 2, 1, 0, 1, 0, 1, 1, 2],
+                    borderColor: '#ff3366',
+                    backgroundColor: 'rgba(255, 51, 102, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#ff3366'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#8b9dc3',
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#8b9dc3', font: { size: 10 } },
+                        grid: { color: 'rgba(61, 74, 122, 0.3)' }
+                    },
+                    x: {
+                        ticks: { color: '#8b9dc3', font: { size: 10 } },
+                        grid: { color: 'rgba(61, 74, 122, 0.3)' }
+                    }
+                }
+            }
+        });
+    }
+
+    // Severity Breakdown Chart
+    const severityCtx = document.getElementById('severityChart');
+    if (severityCtx) {
+        new Chart(severityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['High', 'Medium', 'Low'],
+                datasets: [{
+                    label: 'Incidents',
+                    data: [3, 4, 5],
+                    backgroundColor: [
+                        'rgba(255, 51, 102, 0.7)',
+                        'rgba(255, 170, 0, 0.7)',
+                        'rgba(0, 255, 136, 0.7)'
+                    ],
+                    borderColor: [
+                        '#ff3366',
+                        '#ffaa00',
+                        '#00ff88'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { 
+                            color: '#8b9dc3',
+                            font: { size: 10 },
+                            stepSize: 1
+                        },
+                        grid: { color: 'rgba(61, 74, 122, 0.3)' }
+                    },
+                    x: {
+                        ticks: { color: '#8b9dc3', font: { size: 11 } },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+}
