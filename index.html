@@ -14,7 +14,7 @@
         <div class="logo">
             <img src="MRPL_official_Logo.svg" alt="MRPL Logo" class="mrpl-logo" onerror="this.src='MRPL_official_Logo.png'">
             <div class="logo-text">
-                <h1>MRPL- Manglore Refinery and Petrochemicals Limited</h1>
+                <h1>MRPL- Mangalore Refinery and Petrochemicals Limited</h1>
                 <span class="subtitle">Integrated Security Command & Control System - Dashboard</span>
             </div>
         </div>
@@ -24,10 +24,15 @@
         </div>
     </header>
 
-    <nav class="nav-tabs">
-        <button class="tab-btn active" onclick="showDashboard('availability')">AVAILABILITY</button>
-        <button class="tab-btn" onclick="showDashboard('functional')">FUNCTIONAL</button>
-        <button class="tab-btn" onclick="showDashboard('reports')">REPORTS</button>
+    <nav class="nav-tabs" style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; gap: 0;">
+            <button class="tab-btn active" onclick="showDashboard('availability')">AVAILABILITY</button>
+            <button class="tab-btn" onclick="showDashboard('functional')">FUNCTIONAL</button>
+            <button class="tab-btn" onclick="showDashboard('reports')">REPORTS</button>
+        </div>
+        <div onclick="showLoginInfo()" title="Role-Based Access System" style="cursor: pointer; display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: rgba(0, 255, 136, 0.15); border: 2px solid #00ff88; border-radius: 50%; transition: all 0.3s; margin-right: 20px;" onmouseover="this.style.background='rgba(0, 255, 136, 0.35)'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='rgba(0, 255, 136, 0.15)'; this.style.transform='scale(1)'">
+            <span style="font-size: 1.6rem;">👤</span>
+        </div>
     </nav>
 
     <!-- DASHBOARD 1: AVAILABILITY -->
@@ -183,13 +188,13 @@
             <div class="kpi-card highlight" onclick="showKPIDetails('vehicleEntries')" style="cursor: pointer; position: relative;">
                 <div class="kpi-value live-counter" id="vehicleEntriesToday">1,250</div>
                 <div class="kpi-label">Total Entries Today</div>
-                <div class="kpi-sublabel">Vehicles (ANPR Tracked)</div>
+                <div class="kpi-sublabel">Vehicles <br>(ANPR Tracked)</div>
                 <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
             </div>
             <div class="kpi-card highlight">
                 <div class="kpi-value live-counter" id="personnelInside">2,840</div>
                 <div class="kpi-label">Total Entries Today</div>
-                <div class="kpi-sublabel">Active Personnel Inside Refinery (FR Tracked)</div>
+                <div class="kpi-sublabel">Active Personnel Inside Refinery <br>(FR Tracked)</div>
             </div>
             <div class="kpi-card status-good" onclick="showKPIDetails('accessGranted')" style="cursor: pointer; position: relative;">
                 <div class="kpi-value" id="accessGranted">3,720</div>
@@ -612,20 +617,12 @@
             <div class="modal-body" id="modalBody">
                 <!-- Report Type Selector -->
                 <div style="margin-bottom: 15px;">
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
-                        <span style="color: #8b9dc3; font-weight: 600;">View Report:</span>
-                        <button class="report-tab-btn active" id="allReportBtn" onclick="switchReportView('all')">All Devices</button>
-                        <button class="report-tab-btn" id="onlineReportBtn" onclick="switchReportView('online')">Devices Online</button>
-                        <button class="report-tab-btn" id="offlineReportBtn" onclick="switchReportView('offline')">Devices Offline</button>
-                    </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn-download" onclick="downloadCurrentReport()" style="background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%); color: #0a0e27; font-weight: 600;">Download PDF</button>
-                        <button class="btn-download" onclick="showDeviceReportDateRangeFromModal()" style="background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%); color: #0a0e27; font-weight: 600;">Download Custom Report</button>
+                        <button class="btn-download" onclick="downloadCurrentReport('all')" style="background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%); color: #0a0e27; font-weight: 600;">Download All Devices</button>
+                        <button class="btn-download" onclick="downloadCurrentReport('online')" style="background: linear-gradient(135deg, #00ff88 0%, #00cc70 100%); color: #0a0e27; font-weight: 600;">Download Online Only</button>
+                        <button class="btn-download" onclick="downloadCurrentReport('offline')" style="background: linear-gradient(135deg, #ff4d4d 0%, #cc3333 100%); color: #ffffff; font-weight: 600;">Download Offline Only</button>
+                        <button class="btn-download" onclick="showDeviceReportDateRangeFromModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; font-weight: 600;">Custom Report</button>
                     </div>
-                </div>
-                
-                <!-- Device Count Summary -->
-                <div id="reportSummary" style="margin-bottom: 15px; padding: 10px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; color: #00d4ff; font-size: 0.9rem;">
                 </div>
                 
                 <div class="table-container" style="max-height: 450px; overflow-y: auto; overflow-x: hidden;">
@@ -635,8 +632,10 @@
                                 <th>Sr. No.</th>
                                 <th>Device Type</th>
                                 <th>Gate</th>
-                                <th>Count</th>
-                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Online</th>
+                                <th>Offline</th>
+                                <th>Remark</th>
                             </tr>
                         </thead>
                         <tbody id="deviceDetailsBody">
@@ -664,6 +663,19 @@
                     </button>
                 </div>
                 <canvas id="gateDevicePieChart" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content" style="max-width: 90%; max-height: 90vh;">
+            <div class="modal-header">
+                <h2 id="imageModalTitle">Evidence Image</h2>
+                <span class="close-modal" onclick="closeImageModal()">&times;</span>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: 20px;">
+                <img id="modalImage" src="" alt="Evidence" style="max-width: 100%; max-height: 70vh; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
             </div>
         </div>
     </div>

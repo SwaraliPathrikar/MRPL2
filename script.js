@@ -1,18 +1,15 @@
 ﻿
 const MRPL_DEVICE_DATA = {
-    totalCameras: 230, // Calculated from actual gate distribution
-    onlineCameras: 219, // 95% online
-    offlineCameras: 11, // 5% offline
+    totalCameras: 230, 
+    onlineCameras: 219, 
+    offlineCameras: 11, 
     
-    // ANPR System (from BOQ)
     totalANPR: 20,
     onlineANPR: 19,
     
-    // Face Recognition System (from BOQ)
     totalFaceRecognition: 25,
     onlineFaceRecognition: 24,
     
-    // Storage
     storageCapacityTB: 100,
     storageUsedTB: 67,
     
@@ -22,7 +19,7 @@ const MRPL_DEVICE_DATA = {
         'Jokatte Gate': { cameras: '52/52', anpr: 4, bollards: 8, status: 'ONLINE' },
         'E2 Gate': { cameras: '18/18', anpr: 2, bollards: 0, status: 'ONLINE' },
         'Cargo Gate': { cameras: '32/32', anpr: 4, bollards: 8, status: 'ONLINE' },
-        'Railway Siding': { cameras: '10/10', anpr: 2, bollards: 0, status: 'ONLINE' },
+        'Railway Sliding': { cameras: '10/10', anpr: 2, bollards: 0, status: 'ONLINE' },
         'PCR': { cameras: '6/6', anpr: 0, bollards: 0, status: 'ONLINE' },
         'CISF Checking': { cameras: '4/4', anpr: 2, bollards: 0, status: 'ONLINE' }
     },
@@ -112,48 +109,49 @@ function loadFallbackInventory() {
  
     const boqDevices = [
         { type: 'Gate', total: 8 },
-        { type: 'Automatic Tyre Killer', total: 3},
-        { type: 'Manual Tyre Killer', total: 3 },
-        { type: 'Under Vehicle Surveillance System (UVSS)', total: 6 },
+        { type: 'Automatic Tyre Killers', total: 3},
+        { type: 'Manual Tyre Killers', total: 3 },
+        { type: 'Under Vehicle Surveillance Systems (UVSS)', total: 6 },
         { type: 'Bollards', total: 24 },
-        { type: 'Boom Barrier', total: 30 },
+        { type: 'Boom Barriers', total: 30 },
         { type: 'Swing Barriers', total: 24 },
         { type: 'Visitor Kiosks', total: 6 },
-        { type: '32" Overhead Display', total: 19 },
+        { type: '32" Overhead Displays', total: 19 },
         { type: 'Indoor Digital Displays', total: 8 },
         { type: 'Outdoor Digital Displays', total: 9 },
         { type: 'Video Wall (6 x 3)', total: 1 },
         { type: 'Video Wall (2 x 3)', total: 1 },
-        { type: 'Door Frame Metal Detector (DFMD)', total: 15 },
-        { type: 'Baggage Scanner', total: 8 },
-        { type: 'Frisking Booth', total: 5 },
-        { type: 'Long Range RFID Reader', total: 30 },
-        { type: 'Push Button for Boom Barrier', total: 30 },
+        { type: 'Door Frame Metal Detectors (DFMD)', total: 15 },
+        { type: 'Baggage Scanners', total: 8 },
+        { type: 'Frisking Booths', total: 5 },
+        { type: 'Long Range RFID Readers', total: 30 },
+        { type: 'Push Button for Boom Barriers', total: 30 },
         { type: 'Electro Magnetic Locks', total: 7 },
         { type: 'Indoor Dome Cameras- 5 MP', total: 114 },
         { type: 'Outdoor Fixed Cameras- 5 MP', total: 107 },
         { type: 'PTZ with IR - 2MP', total: 6 },
-        { type: 'Panoramic Camera- 180° - 20 MP', total: 9 },
-        { type: 'Panoramic Camera- 360° - 20 MP', total: 22 },
+        { type: 'Panoramic Cameras- 180° - 20 MP', total: 9 },
+        { type: 'Panoramic Cameras- 360° - 20 MP', total: 22 },
         { type: 'ANPR Cameras', total: 20 },
         { type: 'Face recognition Cameras', total: 25 },
-        { type: 'IP Horn Speaker', total: 86 },
-        { type: 'IP Ceiling Speaker', total: 80 },
+        { type: 'IP Horn Speakers', total: 86 },
+        { type: 'IP Ceiling Speakers', total: 80 },
         { type: 'Master & Local Control Desks', total: 7 },
         { type: 'Face recognition Readers', total: 48 },
-        { type: 'Smart Card Reader', total: 7 },
+        { type: 'Smart Card Readers', total: 7 },
         { type: 'QR Code Readers', total: 48 },
         { type: 'Camera Poles', total: 103 },
-        { type: 'Rack (12U)', total: 19 },
-        { type: 'Outdoor Junction Box', total: 47 },
+        { type: 'Racks (12U)', total: 19 },
+        { type: 'Outdoor Junction Boxes', total: 47 },
         { type: 'Portable face readers (buses)', total: 20 },
         { type: 'Portable face readers (gates)', total: 4 },
         { type: '10 finger enrolment readers', total: 4 },
         { type: 'Indoor signages', total: 30 },
-        { type: 'Wireless Access Point', total: 2 },
-        { type: 'Video Conferencing Solution', total: 2 },
+        { type: 'Wireless Access Points', total: 2 },
+        { type: 'Video Conferencing Solutions', total: 2 },
         { type: 'Switches', total: 1 },
-        { type: 'Diesel Generator Set', total: 2 }
+        { type: 'Speed Guns', total: 20 },
+        { type: 'Diesel Generator Sets', total: 2 }
     ];
     
     let totalDevices = 0;
@@ -266,6 +264,7 @@ function createDeviceCategoryChart(categories) {
             'Panoramic - 180 - 20 MP (9)',
             'Panoramic - 360 - 20 MP (22)',
             'ANPR Cameras (20)',
+            'Speed Guns (20)',
             'Face recognition Cameras (25)'
         ],
         'Access Control': [
@@ -1028,7 +1027,7 @@ function initializeCharts() {
         new Chart(gateMovementCtx, {
             type: 'bar',
             data: {
-                labels: ['Main Gate', 'Cargo Gate', 'LP Gate', 'Jokatte Gate', 'Railway Siding'],
+                labels: ['Main Gate', 'Cargo Gate', 'LP Gate', 'Jokatte Gate', 'Railway Sliding'],
                 datasets: [
                     {
                         label: 'Entries',
@@ -1362,10 +1361,8 @@ function showDeviceDetails(type) {
         tbody.appendChild(row);
     });
     
-    // Backup data and initialize view
+    // Backup data
     allDeviceDataBackup = [...currentDeviceData];
-    currentReportView = 'all';
-    switchReportView('all');
     
     // Show modal
     modal.style.display = 'block';
@@ -1640,22 +1637,21 @@ const allBOQDevices = [
     { type: 'Portable face readers (buses)', total: 20, online: 20, offline: 0 },
     { type: 'Portable face readers (gates)', total: 4, online: 4, offline: 0 },
     { type: '10 finger enrolment readers', total: 4, online: 4, offline: 0 },
-    { type: 'Speed Track Displays', total: 0, online: 0, offline: 0 },
+    { type: 'Speed Track Displays', total: 30, online: 30, offline: 0 },
     // { type: 'Indoor signages', total: 50, online: 50, offline: 0 },
     { type: 'Wireless Access Points', total: 2, online: 2, offline: 0 },
     { type: 'Video Conferencing Solutions', total: 2, online: 2, offline: 0 },
     { type: 'Switches', total: 8, online: 8, offline: 0 },
+    { type: 'Speed Guns', total: 20, online: 20, offline: 0 },
     // { type: 'Diesel Generator Set', total: 2, online: 2, offline: 0 }
 ];
 
-// Generate device cards from Google Sheets data
 function generateAllDeviceCards() {
     const grid = document.getElementById('allDevicesGrid');
     if (!grid) return;
     
     grid.innerHTML = '';
     
-    // Use Google Sheets data if available, otherwise use fallback
     const devicesSource = allDevicesData ? allDevicesData.devices : allBOQDevices.map(d => ({
         deviceType: d.type,
         gates: {},
@@ -1744,29 +1740,51 @@ function showSpecificDeviceDetails(device) {
         });
     } else {
         // Use deviceGateLocations mapping - show EACH gate location as separate row
+        // First, calculate total count across all gates
+        let totalCountAcrossGates = 0;
+        const gateCountsTemp = [];
+        
         deviceGates.forEach((gateLocation) => {
-            // Each gate location gets 1 device (or count from gateDeviceDistribution if available)
             let count = 1;
-            
-            // Try to get actual count from gateDeviceDistribution
-            // Extract main gate name (before colon if present)
             const mainGateName = gateLocation.split(':')[0].trim();
             
             if (gateDeviceDistribution[mainGateName] && gateDeviceDistribution[mainGateName][device.type]) {
                 count = gateDeviceDistribution[mainGateName][device.type];
             }
             
-            // Simulate online/offline (95% online)
-            const online = Math.round(count * 0.95);
-            const offline = count - online;
+            gateCountsTemp.push({ gateLocation, count });
+            totalCountAcrossGates += count;
+        });
+        
+        let remainingOffline = device.offline;
+        
+        gateCountsTemp.forEach((gateData, index) => {
+            const { gateLocation, count } = gateData;
+            
+            // Calculate proportional offline for this gate
+            let gateOffline = 0;
+            if (totalCountAcrossGates > 0) {
+                // Proportional distribution
+                const proportion = count / totalCountAcrossGates;
+                gateOffline = Math.round(device.offline * proportion);
+                
+                // Adjust for rounding on last gate
+                if (index === gateCountsTemp.length - 1) {
+                    gateOffline = remainingOffline;
+                } else {
+                    remainingOffline -= gateOffline;
+                }
+            }
+            
+            const gateOnline = count - gateOffline;
             
             currentDeviceData.push({
                 type: device.type,
                 gate: gateLocation,
                 count: count,
-                online: online,
-                offline: offline,
-                status: offline > 0 ? 'Offline' : 'Online',
+                online: gateOnline,
+                offline: gateOffline,
+                status: gateOffline > 0 ? 'Offline' : 'Online',
                 deviceNumber: deviceCounter++
             });
         });
@@ -1775,32 +1793,38 @@ function showSpecificDeviceDetails(device) {
     // Update modal
     modalTitle.textContent = `${device.type} - Detailed Breakdown`;
     
-    // Populate table
+    // Populate table with ENTRY and EXIT rows
     tbody.innerHTML = '';
-    currentDeviceData.forEach((item, index) => {
-        const row = document.createElement('tr');
-        let statusBadge;
-        if (item.offline > 0) {
-            statusBadge = `<span class="status-badge offline">Offline</span>`;
-        } else {
-            statusBadge = `<span class="status-badge online">Online</span>`;
-        }
+    let rowCounter = 1;
+    
+    currentDeviceData.forEach((item) => {
+        // Generate restoration time for offline devices
+        const getRestorationTime = (offlineCount) => {
+            if (offlineCount === 0) return 'All Operational';
+            const hours = Math.floor(Math.random() * 4) + 1; // 1-4 hours
+            return `Restoration in ${hours}h`;
+        };
         
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${item.type}</td>
-            <td>${item.gate}</td>
-            <td>${item.count}</td>
-            <td>${statusBadge}</td>
-        `;
-        tbody.appendChild(row);
+        // Single Row per device/gate - no ENTRY/EXIT split
+        if (item.count > 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${rowCounter++}</td>
+                <td>${item.type}</td>
+                <td>${item.gate}</td>
+                <td>${item.count}</td>
+                <td style="color: #00ff88; font-weight: 600;">${item.online}</td>
+                <td style="color: #ff4d4d; font-weight: 600;">${item.offline}</td>
+                <td style="color: ${item.offline > 0 ? '#ffaa00' : '#00ff88'}; font-size: 0.85rem;">${getRestorationTime(item.offline)}</td>
+            `;
+            tbody.appendChild(row);
+        }
     });
     
-    // Backup data and initialize view
+    // Backup data
     allDeviceDataBackup = [...currentDeviceData];
-    currentReportView = 'all';
-    switchReportView('all');
     
+    // Show modal
     modal.style.display = 'block';
 }
 
@@ -1813,80 +1837,15 @@ document.addEventListener('DOMContentLoaded', () => {
 let currentReportView = 'all';
 let allDeviceDataBackup = [];
 
-// Switch between All/Online/Offline views
-function switchReportView(viewType) {
-    currentReportView = viewType;
-    
-    // Update button states
-    document.getElementById('allReportBtn').classList.remove('active');
-    document.getElementById('onlineReportBtn').classList.remove('active');
-    document.getElementById('offlineReportBtn').classList.remove('active');
-    document.getElementById(viewType + 'ReportBtn').classList.add('active');
-    
-    // Filter and display data
-    updateTableView();
-}
-
-// Update table based on current view
-function updateTableView() {
-    const tbody = document.getElementById('deviceDetailsBody');
-    const summary = document.getElementById('reportSummary');
-    
-    let filteredData = [];
-    let reportTitle = '';
-    
-    if (currentReportView === 'all') {
-        filteredData = allDeviceDataBackup;
-        reportTitle = 'Showing all devices';
-    } else if (currentReportView === 'online') {
-        filteredData = allDeviceDataBackup.filter(device => {
-            if (device.offline !== undefined) {
-                return device.offline === 0;
-            }
-            return device.status && device.status.toLowerCase().includes('online');
-        });
-        reportTitle = 'Showing online devices only';
-    } else if (currentReportView === 'offline') {
-        filteredData = allDeviceDataBackup.filter(device => {
-            if (device.offline !== undefined) {
-                return device.offline > 0;
-            }
-            return device.status && device.status.toLowerCase().includes('offline');
-        });
-        reportTitle = 'Showing offline devices only';
-    }
-    
-    // Update summary
-    summary.innerHTML = `<strong>${reportTitle}</strong> - Total Records: ${filteredData.length}`;
-    
-    // Update table
-    tbody.innerHTML = '';
-    filteredData.forEach((device, index) => {
-        const row = document.createElement('tr');
-        const status = device.status || (device.offline > 0 ? `${device.offline} Offline` : 'Online');
-        const statusClass = device.offline > 0 || (device.status && device.status.toLowerCase().includes('offline')) ? 'offline' : 'online';
-        
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${device.type}</td>
-            <td>${device.gate}</td>
-            <td>${device.count}</td>
-            <td><span class="status-badge ${statusClass}">${status}</span></td>
-        `;
-        tbody.appendChild(row);
-    });
-    
-    if (filteredData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #8b9dc3;">No devices found for this filter</td></tr>';
-    }
-}
+// Note: switchReportView and updateTableView functions removed as filtering is no longer needed
+// All devices are shown in ENTRY/EXIT format directly in the table
 
 // Download current report view as PDF
-function downloadCurrentReport() {
+function downloadCurrentReport(filterType = 'all') {
     const tbody = document.getElementById('deviceDetailsBody');
     const rows = tbody.querySelectorAll('tr');
     
-    if (rows.length === 0 || (rows.length === 1 && rows[0].cells.length === 1)) {
+    if (rows.length === 0) {
         alert('No data to download');
         return;
     }
@@ -1894,55 +1853,77 @@ function downloadCurrentReport() {
     const modalTitle = document.getElementById('modalTitle').textContent;
     const dateStr = new Date().toISOString().split('T')[0];
     const deviceName = currentDeviceType.replace(/[^a-zA-Z0-9]/g, '_');
-    const reportType = currentReportView.charAt(0).toUpperCase() + currentReportView.slice(1);
     
-    // Get filtered data
-    let filteredData = [];
-    if (currentReportView === 'all') {
-        filteredData = allDeviceDataBackup;
-    } else if (currentReportView === 'online') {
-        filteredData = allDeviceDataBackup.filter(device => {
-            if (device.offline !== undefined) return device.offline === 0;
-            return device.status && device.status.toLowerCase().includes('online');
-        });
-    } else {
-        filteredData = allDeviceDataBackup.filter(device => {
-            if (device.offline !== undefined) return device.offline > 0;
-            return device.status && device.status.toLowerCase().includes('offline');
-        });
+    // Filter rows based on filterType
+    let filteredRows = [];
+    rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 8) {
+            const offlineCount = parseInt(cells[6].textContent) || 0;
+            const onlineCount = parseInt(cells[5].textContent) || 0;
+            
+            if (filterType === 'all') {
+                filteredRows.push(row);
+            } else if (filterType === 'online' && offlineCount === 0 && onlineCount > 0) {
+                filteredRows.push(row);
+            } else if (filterType === 'offline' && offlineCount > 0) {
+                filteredRows.push(row);
+            }
+        }
+    });
+    
+    if (filteredRows.length === 0) {
+        alert(`No ${filterType} devices found to download`);
+        return;
     }
     
     // Generate PDF
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF('landscape'); // Landscape for more columns
     
-    // Header
+    // Header with filter type
+    const filterLabel = filterType === 'all' ? 'All Devices' : 
+                       filterType === 'online' ? 'Online Devices Only' : 
+                       'Offline Devices Only';
+    
     doc.setFontSize(18);
     doc.setTextColor(0, 212, 255);
     doc.text('MRPL ISCC Dashboard', 14, 20);
     
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
-    doc.text(`${modalTitle} - ${reportType} Devices`, 14, 30);
+    doc.text(`${modalTitle} - ${filterLabel}`, 14, 30);
     
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 38);
-    doc.text(`Total Records: ${filteredData.length}`, 14, 44);
+    doc.text(`Total Records: ${filteredRows.length}`, 14, 44);
     
-    // Table data
-    const tableData = filteredData.map((device, index) => {
-        const status = device.status || (device.offline > 0 ? `${device.offline} Offline` : 'Online');
-        return [index + 1, device.type, device.gate, device.count, status];
+    // Table data - extract from filtered rows
+    const tableData = [];
+    filteredRows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        tableData.push([
+            index + 1,                // Renumber Sr. No.
+            cells[1].textContent,     // Device Type
+            cells[2].textContent,     // Gate
+            cells[3].textContent,     // Zone
+            cells[4].textContent,     // Total
+            cells[5].textContent,     // Online
+            cells[6].textContent,     // Offline
+            cells[7].textContent      // Remark
+        ]);
     });
     
-    // Add table
-    const headerColor = currentReportView === 'online' ? [0, 255, 136] : 
-                       currentReportView === 'offline' ? [255, 51, 102] : [0, 212, 255];
+    // Set header color based on filter type
+    const headerColor = filterType === 'online' ? [0, 255, 136] : 
+                       filterType === 'offline' ? [255, 77, 77] : 
+                       [0, 212, 255];
     
+    // Add table
     doc.autoTable({
         startY: 50,
-        head: [['Sr. No.', 'Device Type', 'Gate', 'Count', 'Status']],
+        head: [['Sr. No.', 'Device Type', 'Gate',  'Total', 'Online', 'Offline', 'Remark']],
         body: tableData,
         theme: 'grid',
         headStyles: {
@@ -1951,11 +1932,21 @@ function downloadCurrentReport() {
             fontStyle: 'bold'
         },
         styles: {
-            fontSize: 9,
-            cellPadding: 3
+            fontSize: 8,
+            cellPadding: 2
         },
         alternateRowStyles: {
             fillColor: [245, 245, 245]
+        },
+        columnStyles: {
+            0: { cellWidth: 15 },  // Sr. No.
+            1: { cellWidth: 50 },  // Device Type
+            2: { cellWidth: 45 },  // Gate
+           
+            4: { cellWidth: 20 },  // Total
+            5: { cellWidth: 25 },  // Online
+            6: { cellWidth: 25 },  // Offline
+            7: { cellWidth: 45 }   // Remark
         }
     });
     
@@ -1973,7 +1964,10 @@ function downloadCurrentReport() {
         );
     }
     
-    const filename = `MRPL_${deviceName}_${reportType}_${dateStr}.pdf`;
+    const filterSuffix = filterType === 'all' ? 'All' : 
+                        filterType === 'online' ? 'Online' : 
+                        'Offline';
+    const filename = `MRPL_${deviceName}_${filterSuffix}_${dateStr}.pdf`;
     doc.save(filename);
     alert(`✅ Downloaded: ${filename}`);
 }
@@ -2001,22 +1995,29 @@ let currentSelectedGate = 'all';
 let gateDevicePieChart = null;
 
 const gateDeviceDistribution = {
-    'Main Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance System (UVSS)': 2,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 8,'Visitor Kiosks': 3,'32" Overhead Display': 3,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Video Wall (6 x 3)': 1,'Door Frame Metal Detector (DFMD)': 6,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 8,'Push Button for Boom Barrier': 8,'EM Locks': 3,'Indoor Dome Camera - 5 MP': 35,'Outdoor Fixed Camera - 5 MP': 26,'PTZ with IR - 2MP': 2,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Camera - 360° - 20 MP': 8,'ANPR Cameras': 4,'Face recognition Cameras': 4,'IP Horn Speaker': 31,'IP Ceiling Speaker': 28,'Face recognition Readers': 14,'Smart Card Reader': 1,'QR Code Readers': 14,'Camera Poles': 4,'Rack (12U)': 2,'Outdoor Junction Box': 16,'Portable face readers (buses)': 20,'Portable face readers (on gates)': 4,'10 finger enrolment readers': 2,'Indoor signages': 10,'Video Conferencing Solution': 2,'Switches': 1,'Diesel Generator Set': 1},
-    'LP Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 4,'Visitor Kiosks': 1,'32" Overhead Display': 2,'Indoor Digital Displays': 1,'Outdoor Digital Displays': 2,'Door Frame Metal Detector (DFMD)': 1,'Baggage Scanner': 1,'Frisking Booth': 1,'Long Range RFID Reader': 4,'Push Button for Boom Barrier': 4,'EM Locks': 2,'Indoor Dome Camera - 5 MP': 10,'Outdoor Fixed Camera - 5 MP': 11,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Camera - 360° - 20 MP': 2,'ANPR Cameras': 2,'Face recognition Cameras': 2,'IP Horn Speaker': 5,'IP Ceiling Speaker': 5,'Face recognition Readers': 4,'Smart Card Reader': 1,'QR Code Readers': 4,'Camera Poles': 4,'Rack (12U)': 1,'10 finger enrolment readers': 1,'Indoor signages': 6},
-    'Jokatte Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance System (UVSS)': 2,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 3,'Visitor Kiosks': 1,'32" Overhead Display': 2,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Door Frame Metal Detector (DFMD)': 2,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 4,'Push Button for Boom Barrier': 4,'Electro Magnetic Locks': 2,'Indoor Dome Cameras- 5 MP': 23,'Outdoor Fixed Cameras- 5 MP': 14,'PTZ with IR - 2MP': 2,'Panoramic Camera- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 3,'ANPR Cameras': 4,'Face recognition Cameras': 4,'IP Horn Speaker': 9,'IP Ceiling Speaker': 2,'Face recognition Readers': 6,'QR Code Readers': 6,'Camera Poles': 2,'Rack (12U)': 1,'Outdoor Junction Box': 17,'10 finger enrolment readers': 1,'Indoor signages': 10,'Wireless Access Point': 1,'Portable face readers (buses)': 1,'Portable face readers (gates)': 1},
-    'E2 Gate': {'Boom Barrier': 2,'Swing Barriers': 2,'32" Overhead Display': 2,'Indoor Digital Displays': 1,'Door Frame Metal Detector (DFMD)': 2,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 2,'Push Button for Boom Barrier': 2,'Electro Magnetic Locks': 1,'Indoor Dome Cameras- 5 MP': 4,'Outdoor Fixed Cameras- 5 MP': 2,'PTZ with IR - 2MP': 4,'Panoramic Camera- 180° - 20 MP': 1,'Panoramic Camera- 360° - 20 MP': 2,'ANPR Cameras': 2,'Face recognition Cameras': 3,'IP Horn Speaker': 1,'IP Ceiling Speaker': 1,'Face recognition Readers': 4,'QR Code Readers': 4,'Camera Poles': 2,'Rack (12U)': 1,'Outdoor Junction Box': 14,'Indoor signages': 2},
-    'Cargo Gate': {'Under Vehicle Surveillance System (UVSS)': 2,'Bollards': 8,'Boom Barrier': 4,'Swing Barriers': 4,'Visitor Kiosks': 2,'32" Overhead Display': 3,'Indoor Digital Displays': 4,'Outdoor Digital Displays': 3,'Video Wall (6 x 3)': 1,'Long Range RFID Reader': 6,'Push Button for Boom Barrier': 3,'Indoor Dome Cameras- 5 MP': 16,'Outdoor Fixed Cameras- 5 MP': 6,'PTZ with IR - 2MP': 2,'ANPR Cameras': 4,'Face recognition Cameras': 4,'IP Horn Speaker': 5,'IP Ceiling Speaker': 2,'Camera Poles': 3,'Rack (12U)': 1},
-    'Railway Sliding': {'Under Vehicle Surveillance System (UVSS)': 2,'Boom Barrier': 2,'Gate': 1,'PTZ with IR - 2MP': 2,'Panoramic Camera- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 1,'ANPR Cameras': 2,'Indoor Dome Cameras- 5 MP': 2,'Outdoor Fixed Cameras- 5 MP': 6,'IP Horn Speaker': 3,'IP Ceiling Speaker': 1,'Rack (12U)': 1,'Outdoor Junction Box': 6,'Wireless Access Point': 1},
-    'PCR': {'Under Vehicle Surveillance System (UVSS)': 1,'Swing Barriers': 1,'32" Overhead Display': 1,'Video Wall (2 x 3)': 1,'Gate': 1,'Panoramic Camera- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 1,'Indoor Dome Cameras- 5 MP': 2,'Outdoor Fixed Cameras- 5 MP': 2,'Face recognition Cameras': 2,'IP Horn Speaker': 2,'IP Ceiling Speaker': 2,'Master & Local Control Desks': 1,'Face recognition Readers': 1,'QR Code Readers': 1},
-    'CISF Checking': {'Under Vehicle Surveillance System (UVSS)': 1,'Boom Barrier': 1,'Push Button for Boom Barrier': 1,'Video Wall (2 x 3)': 1,'Panoramic Camera- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 1,'ANPR Cameras': 2,'Face recognition Cameras': 2}
+    'Main Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance Systems (UVSS)': 2,'Bollards': 8,'Boom Barriers': 4,'Swing Barriers': 8,'Visitor Kiosks': 3,'32" Overhead Displays': 3,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Video Wall (6 x 3)': 1,'Door Frame Metal Detectors (DFMD)': 6,'Baggage Scanners': 2,'Frisking Booth': 1,'Long Range RFID Readers': 8,'Push Button for Boom Barriers': 8,'EM Locks': 3,'Indoor Dome Cameras - 5 MP': 35,'Outdoor Fixed Cameras - 5 MP': 26,'PTZ with IR - 2MP': 2,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Cameras - 360° - 20 MP': 8,'ANPR Cameras': 4,'Speed Guns': 4,'Face recognition Cameras': 4,'IP Horn Speakers': 31,'IP Ceiling Speakers': 28,'Face recognition Readers': 14,'Smart Card Reader': 1,'QR Code Readers': 14,'Camera Poles': 4,'Racks (12U)': 2,'Outdoor Junction Boxes': 16,'Portable face readers (buses)': 20,'Portable face readers (on gates)': 4,'10 finger enrolment readers': 2,'Indoor signages': 10,'Video Conferencing Solutions': 2,'Switch': 1,'Diesel Generator Set': 1},
+    
+    'LP Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Bollards': 8,'Boom Barriers': 4,'Swing Barriers': 4,'Visitor Kiosk': 1,'32" Overhead Displays': 2,'Indoor Digital Display': 1,'Outdoor Digital Displays': 2,'Door Frame Metal Detector (DFMD)': 1,'Baggage Scanner': 1,'Frisking Booth': 1,'Long Range RFID Readers': 4,'Push Button for Boom Barriers': 4,'EM Locks': 2,'Indoor Dome Cameras - 5 MP': 10,'Outdoor Fixed Cameras - 5 MP': 11,'Panoramic Camera - 180° - 20 MP': 1,'Panoramic Cameras - 360° - 20 MP': 2,'ANPR Cameras': 2,'Speed Guns': 2,'Face recognition Cameras': 2,'IP Horn Speakers': 5,'IP Ceiling Speakers': 5,'Face recognition Readers': 4,'Smart Card Reader': 1,'QR Code Readers': 4,'Camera Poles': 4,'Rack (12U)': 1,'10 finger enrolment reader': 1,'Indoor signages': 6},
+    
+    'Jokatte Gate': {'Automatic Tyre Killer': 1,'Manual Tyre Killer': 1,'Under Vehicle Surveillance Systems (UVSS)': 2,'Bollards': 8,'Boom Barriers': 4,'Swing Barriers': 3,'Visitor Kiosk': 1,'32" Overhead Displays': 2,'Indoor Digital Displays': 2,'Outdoor Digital Displays': 3,'Door Frame Metal Detectors (DFMD)': 2,'Baggage Scanners': 2,'Frisking Booth': 1,'Long Range RFID Readers': 4,'Push Button for Boom Barriers': 4,'Electro Magnetic Locks': 2,'Indoor Dome Cameras- 5 MP': 23,'Outdoor Fixed Cameras- 5 MP': 14,'PTZ with IR - 2MP': 2,'Panoramic Cameras- 180° - 20 MP': 2,'Panoramic Cameras- 360° - 20 MP': 3,'ANPR Cameras': 4,'Speed Guns': 4,'Face recognition Cameras': 4,'IP Horn Speakers': 9,'IP Ceiling Speakers': 2,'Face recognition Readers': 6,'QR Code Readers': 6,'Camera Poles': 2,'Rack (12U)': 1,'Outdoor Junction Boxes': 17,'10 finger enrolment reader': 1,'Indoor signages': 10,'Wireless Access Point': 1,'Portable face reader (buses)': 1,'Portable face reader (gates)': 1},
+    
+    'E2 Gate': {'Boom Barrier': 2,'Swing Barriers': 2,'32" Overhead Displays': 2,'Indoor Digital Display': 1,'Door Frame Metal Detector (DFMD)': 2,'Baggage Scanner': 2,'Frisking Booth': 1,'Long Range RFID Reader': 2,'Push Button for Boom Barrier': 2,'Electro Magnetic Lock': 1,'Indoor Dome Cameras- 5 MP': 4,'Outdoor Fixed Cameras- 5 MP': 2,'PTZ with IR - 2MP': 4,'Panoramic Cameras- 180° - 20 MP': 1,'Panoramic Cameras- 360° - 20 MP': 2,'ANPR Cameras': 2,'Speed Guns': 4,'Face recognition Cameras': 3,'IP Horn Speaker': 1,'IP Ceiling Speaker': 1,'Face recognition Readers': 4,'QR Code Readers': 4,'Camera Poles': 2,'Rack (12U)': 1,'Outdoor Junction Boxes': 14,'Indoor signages': 2},
+    
+    'Cargo Gate': {'Under Vehicle Surveillance Systems (UVSS)': 2,'Bollards': 8,'Boom Barriers': 4,'Swing Barriers': 4,'Visitor Kiosks': 2,'32" Overhead Displays': 3,'Indoor Digital Displays': 4,'Outdoor Digital Displays': 3,'Video Wall (6 x 3)': 1,'Long Range RFID Readers': 6,'Push Button for Boom Barriers': 3,'Indoor Dome Cameras- 5 MP': 16,'Outdoor Fixed Cameras- 5 MP': 6,'PTZ with IR - 2MP': 2,'ANPR Cameras': 4,'Speed Guns': 4,'Face recognition Cameras': 4,'IP Horn Speakers': 5,'IP Ceiling Speakers': 2,'Camera Poles': 3,'Rack (12U)': 1},
+    
+    'Railway Sliding': {'Under Vehicle Surveillance Systems (UVSS)': 2,'Boom Barriers': 2,'Gate': 1,'PTZ with IR - 2MP': 2,'Panoramic Cameras- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 1,'ANPR Cameras': 2,'Speed Guns': 2,'Indoor Dome Cameras- 5 MP': 2,'Outdoor Fixed Cameras- 5 MP': 6,'IP Horn Speakers': 3,'IP Ceiling Speaker': 1,'Rack (12U)': 1,'Outdoor Junction Boxes': 6,'Wireless Access Point': 1},
+    
+    'PCR': {'Swing Barriers': 1,'32" Overhead Display': 1,'Video Wall (2 x 3)': 1,'Gate': 1,'Panoramic Cameras- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 1,'Indoor Dome Cameras- 5 MP': 2,'Outdoor Fixed Cameras- 5 MP': 2,'Face recognition Cameras': 2,'IP Horn Speakers': 2,'IP Ceiling Speakers': 2,'Master & Local Control Desks': 1,'Face recognition Reader': 1,'QR Code Reader': 1},
+    
+    'CISF Checking': {'Under Vehicle Surveillance System (UVSS)': 1,'Boom Barrier': 1,'Push Button for Boom Barrier': 1,'Video Wall (2 x 3)': 1,'Panoramic Cameras- 180° - 20 MP': 2,'Panoramic Camera- 360° - 20 MP': 1,'ANPR Cameras': 2,'Speed Guns': 2,'Face recognition Cameras': 2}
 };
 
 const deviceGateLocations = {
     'Gates': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate','Railway Sliding','PCR'],
     'Automatic Tyre Killers': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
     'Manual Tyre Killers': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
-    'Under Vehicle Surveillance Systems (UVSS)': ['Main Gate', 'LP Gate', 'Cargo Gate', 'Jokatte Gate', 'Railway Sliding', 'PCR', 'CISF Checking (Jokatte Gate)'],
-    'Bollards': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
+    'Under Vehicle Surveillance Systems (UVSS)': ['Main Gate', 'LP Gate', 'Cargo Gate', 'Jokatte Gate', 'Railway Sliding', 'CISF Checking (Jokatte Gate)'],
+    'Bollards': ['Main Gate','LP Gate','Jokatte Gate'],
     'Boom Barriers': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
     'Swing Barriers': ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     'Visitor Kiosks': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
@@ -2024,7 +2025,7 @@ const deviceGateLocations = {
     'Indoor Digital Displays': ['Main Gate', 'LP Gate', 'Cargo Gate'],
     'Outdoor Digital Displays': ['Main Gate: Entry','Main Gate: Workshop Junction', 'LP Gate: Entry','LP Gate: Exit','Cargo Gate: Vehicle Parking Area','Cargo Gate: Betaland', 'Jokatte Gate: Entry','Jokatte Gate: Parking Area (CL Area)','Jokatte Gate: Parking Area (Near Plant Gate)'],
     'Video Wall (6 x 3)': ['Main Gate: Command Centre'],
-    'Video Wall (2 x 3)': ['PCR (Plant Gate)'],
+    'Video Wall (2 x 3)': ['PCR: (Plant Gate)'],
     'Door Frame Metal Detectors (DFMD)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
     'Baggage Scanners': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
     // 'Frisking Booth': ['Main Gate', 'Cargo Gate', 'CISF Checking'],
@@ -2032,7 +2033,7 @@ const deviceGateLocations = {
     'Push Button for Boom Barriers': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
     'Electro Magnetic Locks': ['Main Gate', 'LP Gate', 'Jokatte Gate'],
     'Indoor Dome Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF','Main Gate: 1F', 'LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian', 'Cargo Gate: Canopy'],
-    'Outdoor Fixed Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF', 'LP Gate: Canopy','LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian', 'Cargo Gate: Canopy', 'Railway Siding'],
+    'Outdoor Fixed Cameras- 5 MP': ['Main Gate: Canopy','Main Gate: Parking & Roads','Main Gate: GF', 'LP Gate: Canopy','LP Gate: Pedestrian', 'Jokatte Gate: Canopy','Jokatte Gate: Parking & Roads','Jokatte Gate: GF', 'E2 Gate: Pedestrian', 'Cargo Gate: Canopy', 'Railway Sliding'],
     'PTZ with IR - 2MP': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'Cargo Gate','Railway Sliding'],
     'Panoramic Cameras- 180° - 20 MP': ['Main Gate: Security Check Building','Main Gate: Canopy' ,'LP Gate: Security Check Building','LP Gate: Canopy', 'Jokatte Gate: Security Check Building','Jokatte Gate: Canopy' ,'E2 Gate: Security Check Building','E2 Gate: Canopy','Cargo Gate: Security Check Building', 'Cargo Gate: Canopy','Railway Sliding: Security Check Building', 'Railway Sliding: Canopy','PCR: Security Check Building','PCR: Canopy', 'CISF Checking (Jokatte Gate): Security Check Building', 'CISF Checking (Jokatte Gate): Canopy'],
     'Panoramic Cameras- 360° - 20 MP': ['Main Gate: Parking', 'LP Gate: Parking', 'Jokatte Gate: Parking', 'E2 Gate: Parking', 'Cargo Gate: Parking','Railway Sliding: Parking','PCR: Parking','CISF Checking (Jokatte Gate): Parking'],
@@ -2044,17 +2045,18 @@ const deviceGateLocations = {
     'Face recognition Readers':  ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
     // 'Smart Card Reader': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'],
     'QR Code Readers':  ['Main Gate: VIP Pedestrian','Main Gate: Blue Collar Pedestrian' ,'LP Gate: Pedestrian', 'Jokatte Gate: VIP Pedestrian', 'Jokatte Gate: Blue Collar Pedestrian','E2 Gate: Pedestrian', 'PCR: Pedestrian'],
-    // 'Camera Poles': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'Railway Siding'],
+    // 'Camera Poles': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'Railway Sliding'],
     'Racks (12U)': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'Railway Sliding'],
     'Outdoor Junction Boxes': ['Main Gate', 'Jokatte Gate', 'E2 Gate', 'Railway Sliding'],
     'Portable face readers (buses)': ['Main Gate','LP Gate','Jokatte Gate'],
     'Portable face readers (gates)': ['Main Gate','LP Gate','Jokatte Gate'],
     '10 finger enrolment readers':['Main Gate','LP Gate','Jokatte Gate'],
     'Speed Track Displays':[],
-    // 'Indoor signages': ['Main Gate', 'Jokatte Gate', 'E2 Gate', 'Railway Siding'],
+    // 'Indoor signages': ['Main Gate', 'Jokatte Gate', 'E2 Gate', 'Railway Sliding'],
     'Wireless Access Points': ['Jokatte Gate','Railway Sliding'],
     'Video Conferencing Solutions': ['Main Gate: Security Check Building','Main Gate: Command Centre Building'],
     'Switches': ['Main Gate'],
+    'Speed Guns': ['Main Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate', 'Cargo Gate', 'CISF Checking (Jokatte Gate)'],
     // 'Diesel Generator Set': ['Main Gate', 'Cargo Gate']
 };
 
@@ -2069,7 +2071,7 @@ function populateGateOperationsTable() {
     console.log('✅ Populating gate operations table...');
     tbody.innerHTML = '';
     
-    // Define gates to display (excluding PCR, Railway Siding, CISF Checking)
+    // Define gates to display (excluding PCR, Railway Sliding, CISF Checking)
     const gatesToShow = ['Main Gate', 'Cargo Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'];
     
     gatesToShow.forEach(gateName => {
@@ -2895,6 +2897,7 @@ function showKPIDetails(type) {
                             <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Gate</th>
                             <th style="padding: 0.7rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Time</th>
                             <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Reason</th>
+                            <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Validating Officer</th>
                             <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Data Source</th>
                             <th style="padding: 0.7rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Attachment</th>
                         </tr>
@@ -2905,15 +2908,17 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:30</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
-                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;" onclick="showImage('snapshot_ddmmyyyy.png')"><span style="font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #00d4ff; padding-bottom: 2px;">View</span></td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Priya Sharma</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:45</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Malfunction</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2921,7 +2926,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">12:20</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Lost Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2929,7 +2935,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">11:50</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2937,7 +2944,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">11:15</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Damaged</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2945,7 +2953,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:40</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2953,7 +2962,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:10</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Not Working</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2961,7 +2971,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:55</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2969,7 +2980,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:30</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Lost Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2977,7 +2989,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:05</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Malfunction</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2985,7 +2998,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:45</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2993,7 +3007,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:20</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Damaged</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -3001,7 +3016,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:00</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -3009,7 +3025,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">07:40</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Lost Card</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -3017,7 +3034,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">07:15</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Not Working</td>
-                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -3025,6 +3043,7 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">15:20</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Entry - Fire Drill</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Override</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
@@ -3033,6 +3052,7 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:10</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Entry - Medical Emergency</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Override</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
@@ -3041,6 +3061,7 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:25</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Entry - Safety Inspection</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ABC</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Override</td>
                             <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
@@ -3058,7 +3079,6 @@ function showKPIDetails(type) {
     modal.style.display = 'block';
 }
 
-// Show Incident Details
 function showIncidentDetails(period) {
     const modal = document.getElementById('deviceModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -3237,7 +3257,6 @@ function showIncidentDetailsCard(type) {
     modal.style.display = 'block';
 }
 
-// Incident data with all details
 const INCIDENT_DATA = {
     'Speed Violation': [
         { time: '14:35', vehicleNo: 'KA-20-MN-5847', location: 'Main Gate Entry', speed: '65 km/h', evidenceImage: 'IMG_5847.jpg', dataSource: 'Speed Gun + ANPR' },
@@ -3246,8 +3265,8 @@ const INCIDENT_DATA = {
         { time: '07:20', vehicleNo: 'KA-18-EF-2134', location: 'Main Gate', speed: '70 km/h', evidenceImage: 'IMG_2134.jpg', dataSource: 'Speed Gun + ANPR' }
     ],
     'Unauthorized Access': [
-        { time: '13:20', location: 'LP Gate', evidenceSnapshot: 'SNAP_1320.jpg', actionTaken: 'Access Denied, Security Alerted' },
-        { time: '07:55', location: 'Main Gate', evidenceSnapshot: 'SNAP_0755.jpg', actionTaken: 'Vehicle Stopped, ID Verified' }
+        { time: '13:20', location: 'LP Gate', evidenceSnapshot: 'SNAP_1320.jpg', actionTaken: 'Access Denied, Security Alerted', dataSource: 'ACS' },
+        { time: '07:55', location: 'Main Gate', evidenceSnapshot: 'SNAP_0755.jpg', actionTaken: 'Vehicle Stopped, ID Verified',dataSource: 'ACS' }
     ],
     'No Riding Helmet': [
         { time: '12:15', location: 'Jokatte Gate', vehiclePlate: 'KA-20-GH-9876', evidenceSnapshot: 'SNAP_1215.jpg', dataSource: 'ANPR' },
@@ -3257,7 +3276,7 @@ const INCIDENT_DATA = {
         { time: '11:45', location: 'Main Gate', vehicle1: 'KA-21-KL-7890', vehicle2: 'KA-20-MN-1234', evidenceSnapshot: 'SNAP_1145.jpg', actionTaken: 'Both vehicles stopped and warned', dataSource: 'ANPR + CCTV' }
     ],
     'No PPE Kit': [
-        { time: '09:50', location: 'E2 Gate', personnelID: 'EMP-2847', evidenceSnapshot: 'SNAP_0950.jpg', actionTaken: 'Entry Denied, Directed to PPE Station', dataSource: 'Face Recognition' }
+        { time: '09:50', location: 'E2 Gate', personnelID: 'EMP-2847', evidenceSnapshot: 'SNAP_0950.jpg', actionTaken: 'Entry Denied, Directed to PPE Station', dataSource: 'Face Recognition Camera' }
     ],
     'Expired Badge': [
         { time: '08:40', location: 'LP Gate', personnelName: 'Ramesh Kumar', badgeID: 'EMP-2847', expiredSince: '3 days', evidenceSnapshot: 'SNAP_0840.jpg', actionTaken: 'Access Denied, Directed to HR', dataSource: 'Badge Reader' }
@@ -4171,15 +4190,8 @@ function showUptimeReportDateRange() {
     
     document.body.appendChild(modal);
     
-    // Set default dates (last 7 days)
+    // Set max date to today (no prefilled dates)
     const today = new Date();
-    const fromDate = new Date(today);
-    fromDate.setDate(today.getDate() - 7);
-    
-    document.getElementById('uptimeReportToDate').value = today.toISOString().split('T')[0];
-    document.getElementById('uptimeReportFromDate').value = fromDate.toISOString().split('T')[0];
-    
-    // Set max date to today
     document.getElementById('uptimeReportToDate').max = today.toISOString().split('T')[0];
     document.getElementById('uptimeReportFromDate').max = today.toISOString().split('T')[0];
 }
@@ -4311,15 +4323,8 @@ function showDeviceReportDateRange(deviceType) {
     
     document.body.appendChild(modal);
     
-    // Set default dates
+    // Set max date to today (no prefilled dates)
     const today = new Date();
-    const fromDate = new Date(today);
-    fromDate.setDate(today.getDate() - 7); // Default 7 days
-    
-    document.getElementById('reportToDate').value = today.toISOString().split('T')[0];
-    document.getElementById('reportFromDate').value = fromDate.toISOString().split('T')[0];
-    
-    // Set max date to today
     document.getElementById('reportToDate').max = today.toISOString().split('T')[0];
     document.getElementById('reportFromDate').max = today.toISOString().split('T')[0];
 }
@@ -4433,15 +4438,8 @@ function showGateReportDateRange() {
     
     document.body.appendChild(modal);
     
-    // Set default dates
+    // Set max date to today (no prefilled dates)
     const today = new Date();
-    const fromDate = new Date(today);
-    fromDate.setDate(today.getDate() - 7); // Default 7 days
-    
-    document.getElementById('gateReportToDate').value = today.toISOString().split('T')[0];
-    document.getElementById('gateReportFromDate').value = fromDate.toISOString().split('T')[0];
-    
-    // Set max date to today
     document.getElementById('gateReportToDate').max = today.toISOString().split('T')[0];
     document.getElementById('gateReportFromDate').max = today.toISOString().split('T')[0];
 }
@@ -4885,16 +4883,14 @@ function initializeIncidentCharts() {
             ],
             'Medium': [
                 'Expired Badge Access Attempt',
-                
+                'Wild Animal Spotted',
                 'Badge Not Visible',
                 'Speed Violation in Plant Area',
-                // 'Improper Vehicle Parking',
                 'Restricted Area Entry Without Permission'
             ],
             'Low': [
                 'No Riding Helmet',
                 'Speed Violation in Non-Plant Area',
-                // 'Minor Documentation Issues',
                 'Late Badge Renewal',
                 'Visitor Protocol Violation'
             ]
@@ -5019,7 +5015,7 @@ function showSecurityStatusDetails() {
                         <td style="color: #00ff88;">96.8%</td>
                         <td>2 min ago</td>
                         <td style="color: #00d4ff;">Axxon One VMS</td>
-                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                     </tr>
                     <tr>
                         <td>Access Control</td>
@@ -5027,7 +5023,7 @@ function showSecurityStatusDetails() {
                         <td style="color: #00ff88;">98.5%</td>
                         <td>1 min ago</td>
                         <td style="color: #00d4ff;">ACS + Barriers</td>
-                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                     </tr>
                     <tr>
                         <td>ANPR System</td>
@@ -5035,7 +5031,7 @@ function showSecurityStatusDetails() {
                         <td style="color: #00ff88;">100%</td>
                         <td>3 min ago</td>
                         <td style="color: #00d4ff;">ANPR Cameras</td>
-                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                     </tr>
                     <tr>
                         <td>Face Recognition</td>
@@ -5043,7 +5039,7 @@ function showSecurityStatusDetails() {
                         <td style="color: #00ff88;">97.2%</td>
                         <td>2 min ago</td>
                         <td style="color: #00d4ff;">FR Readers + Cameras</td>
-                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                     </tr>
                     <tr>
                         <td>Speed Detection</td>
@@ -5051,7 +5047,7 @@ function showSecurityStatusDetails() {
                         <td style="color: #00ff88;">95.0%</td>
                         <td>5 min ago</td>
                         <td style="color: #00d4ff;">Speed Radar + ANPR</td>
-                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                     </tr>
                 </tbody>
             </table>
@@ -5154,6 +5150,7 @@ function showGateProcessingDetails() {
             <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 1rem; text-align: center; margin-bottom: 1.5rem;">
                 <div style="font-size: 2.5rem; color: #00d4ff; font-weight: bold;">1 minute</div>
                 <div style="font-size: 0.9rem; color: #8b9dc3; margin-top: 0.5rem;">Average Processing Time (All Gates)</div>
+                <div style="font-size: 0.85rem; color: #ffaa00; margin-top: 0.5rem;">Threshold: 1 min 10 sec</div>
             </div>
             
             <h4 style="color: #00d4ff; margin: 1.5rem 0 1rem 0;">Gate-wise Processing Time</h4>
@@ -5163,6 +5160,7 @@ function showGateProcessingDetails() {
                         <th>Gate Name</th>
                         <th>Avg Time</th>
                         <th>Vehicles Today</th>
+                        <th>Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -5170,26 +5168,31 @@ function showGateProcessingDetails() {
                         <td style="font-weight: 600; color: #00d4ff;">Main Gate</td>
                         <td style="color: #00ff88;">55s</td>
                         <td>1,245</td>
+                        <td style="color: #00ff88;">Ok</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: #00d4ff;">Cargo Gate</td>
                         <td style="color: #00ff88;">1m 10s</td>
                         <td>285</td>
+                        <td style="color: #00ff88;">Ok</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: #00d4ff;">LP Gate</td>
                         <td style="color: #00ff88;">50s</td>
                         <td>856</td>
+                        <td style="color: #00ff88;">Ok</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: #00d4ff;">Jokatte Gate</td>
                         <td style="color: #00ff88;">1m 5s</td>
                         <td>642</td>
+                        <td style="color: #00ff88;">Ok</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: #00d4ff;">E2 Gate</td>
                         <td style="color: #ffaa00;">1m 25s</td>
                         <td>198</td>
+                        <td style="color: #ffaa00;">Rain/Fog affecting sensor visibility</td>
                     </tr>
                 </tbody>
             </table>
@@ -5503,7 +5506,7 @@ function showTankerMovement() {
                     <tbody>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-20-MN-5847</td>
-                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Diesel</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Sulphur</td>
                             <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">14:20</td>
                             <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(255, 170, 0, 0.2); color: #ffaa00; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Loading</span></td>
                             <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 3</td>
@@ -5755,7 +5758,7 @@ function showParkedVehicles() {
             
             <!-- Data Source Info -->
             <div style="margin-top: 2rem; padding: 1rem; background: rgba(0, 212, 255, 0.05); border-radius: 8px; border-left: 4px solid #00d4ff;">
-                <div style="font-size: 0.85rem; color: #00d4ff; font-weight: 600; margin-bottom: 0.3rem;">📡 Data Source: ANPR System</div>
+                <div style="font-size: 0.85rem; color: #00d4ff; font-weight: 600; margin-bottom: 0.3rem;"> Data Source: ANPR System</div>
                 <div style="font-size: 0.75rem; color: #8b9dc3;">Real-time vehicle tracking via Automatic Number Plate Recognition</div>
             </div>
         </div>
@@ -6102,3 +6105,49 @@ console.log('showSpeedViolations:', typeof showSpeedViolations);
 console.log('showTankerMovement:', typeof showTankerMovement);
 console.log('showRepeatOffenders:', typeof showRepeatOffenders);
 console.log('showExpiredBadgeAttempts:', typeof showExpiredBadgeAttempts);
+
+// Image Viewer Functions
+function showImage(imagePath) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('imageModalTitle');
+    
+    modalImage.src = imagePath;
+    modalTitle.textContent = 'Evidence Image';
+    modal.style.display = 'block';
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const imageModal = document.getElementById('imageModal');
+    if (event.target === imageModal) {
+        closeImageModal();
+    }
+}
+
+
+function showLoginInfo() {
+    const modal = document.getElementById('imageModal');
+    const modalTitle = document.getElementById('imageModalTitle');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    modalTitle.textContent = 'Role-Based Access Control System';
+    
+    modalBody.innerHTML = `
+        <div style="padding: 20px; color: #e0e0e0; text-align: left;">
+            <div style="background: rgba(102, 126, 234, 0.1); border-left: 4px solid #667eea; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #667eea; margin: 0 0 10px 0; font-size: 1.1rem;"> Secure Dashboard Access</h3>
+                <p style="margin: 0; color: #8b9dc3; font-size: 0.9rem;">This dashboard implements role-based access control to ensure data security and appropriate information visibility.</p>
+            </div>
+            
+            
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
