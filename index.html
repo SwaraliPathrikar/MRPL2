@@ -32,6 +32,28 @@
 
     <!-- DASHBOARD 1: AVAILABILITY -->
     <div id="availability" class="dashboard-content active">
+        
+        <!-- Command & Control - Strategic Overview -->
+        <!-- <div class="card" style="margin-bottom: 2rem;">
+            <h3>Command & Control - Strategic Overview</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                
+                <div onclick="showSecurityStatusDetails()" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Security Status</div>
+                    <div style="font-size: 2.5rem; color: #00ff88; font-weight: bold; line-height: 1;">NORMAL</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">All Systems Operational</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
+                </div>
+                
+                
+                <div onclick="showCCTVSystemHealth()" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">CCTV Health</div>
+                    <div style="font-size: 2.5rem; color: #00d4ff; font-weight: bold; line-height: 1;">96.8%</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">245/253 Cameras Online</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
+                </div>
+            </div>
+        </div> -->
 
         <!-- ALL DEVICES STATUS CARDS -->
         <div style="margin-top: 2rem; margin-bottom: 1rem; text-align: center;">
@@ -187,6 +209,12 @@
                 <div class="kpi-sublabel">Without Pass / Emergency</div>
                 <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
             </div>
+            <div class="kpi-card" onclick="showGateProcessingDetails()" style="cursor: pointer; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); position: relative;">
+                <div class="kpi-value" id="avgProcessingTime" style="color: #00d4ff;">1 min</div>
+                <div class="kpi-label">Avg Processing Time</div>
+                <div class="kpi-sublabel">Gate Operations</div>
+                <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
+            </div>
         </div>
         
         <!-- Incident Management & Safety Violations -->
@@ -231,7 +259,7 @@
                 <div onclick="showIncidentDetailsCard('open')" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 170, 0, 0.2) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Open Incidents</div>
                     <div style="font-size: 3rem; color: #ffaa00; font-weight: bold; line-height: 1;">4</div>
-                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">Avg: 25 min</div>
+                    <!-- <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem;">Avg: 25 min</div> -->
                     <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
@@ -244,35 +272,87 @@
                 </div>
                 
                 <!-- SLA Compliance -->
-                <div onclick="showSLABreachDetails()" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                <div onclick="showSLABreachReportOptions()" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
                     <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">SLA Compliance</div>
                     <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">83%</div>
                     <div style="font-size: 0.75rem; color: #ff3366; margin-top: 0.5rem;">2 Breaches Today</div>
                     <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s;">Click for details</div>
                 </div>
                 
-                <!-- Speed Violations -->
-                <!-- <div style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Speed Violations</div>
-                    <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1;">8</div>
-                </div> -->
+                <!-- Expired Badge Attempts -->
+                <div onclick="showExpiredBadgeAttempts()" style="cursor: pointer !important; pointer-events: auto !important; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem; pointer-events: none;">Expired Badge</div>
+                    <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1; pointer-events: none;">6</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem; pointer-events: none;">Access Attempts</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s; pointer-events: none;">Click for details</div>
+                </div>
             </div>
             
-            <!-- Second Row - Safety Violations -->
-            <!-- <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
-                <div style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">No Riding Helmet</div>
-                    <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1;">3</div>
+            <!-- Vehicle & Speed Monitoring Row -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
+                <!-- Speed Violations - Plant Area -->
+                <div onclick="showSpeedViolations('plant')" style="cursor: pointer !important; pointer-events: auto !important; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem; pointer-events: none;">Speed Violation - Plant Area</div>
+                    <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1; pointer-events: none;">12</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem; pointer-events: none;">Today</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s; pointer-events: none;">Click for details</div>
                 </div>
-                <div style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">No PPE Kit</div>
-                    <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1;">1</div>
+                
+                <!-- Speed Violations - Non-Plant Area -->
+                <div onclick="showSpeedViolations('nonplant')" style="cursor: pointer !important; pointer-events: auto !important; background: linear-gradient(135deg, rgba(255, 170, 0, 0.2) 0%, rgba(255, 170, 0, 0.05) 100%); border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem; pointer-events: none;">Speed Violation- Non-Plant Area</div>
+                    <div style="font-size: 3rem; color: #ffaa00; font-weight: bold; line-height: 1; pointer-events: none;">8</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem; pointer-events: none;">Today</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s; pointer-events: none;">Click for details</div>
                 </div>
-                <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem;">Tailgating</div>
-                    <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1;">0</div>
+                
+                <!-- Tanker Movement -->
+                <div onclick="showTankerMovement()" style="cursor: pointer !important; pointer-events: auto !important; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem; pointer-events: none;">Tanker Movement</div>
+                    <div style="font-size: 3rem; color: #00d4ff; font-weight: bold; line-height: 1; pointer-events: none;">45</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem; pointer-events: none;">Today's Entries</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s; pointer-events: none;">Click for details</div>
                 </div>
-            </div> -->
+                
+                <!-- Repeat Offenders -->
+                <div onclick="showRepeatOffenders()" style="cursor: pointer !important; pointer-events: auto !important; background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem; pointer-events: none;">Repeat Offenders</div>
+                    <div style="font-size: 3rem; color: #ff3366; font-weight: bold; line-height: 1; pointer-events: none;">5</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem; pointer-events: none;">This Week</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s; pointer-events: none;">Click for details</div>
+                </div>
+            </div>
+            
+            <!-- Parking Management Row -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
+                <!-- Parked Vehicles Status -->
+                <div onclick="showParkedVehicles()" style="cursor: pointer !important; pointer-events: auto !important; background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.05) 100%); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; position: relative;">
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 0.5rem; pointer-events: none;">Parked Vehicles</div>
+                    <div style="font-size: 3rem; color: #00ff88; font-weight: bold; line-height: 1; pointer-events: none;">24</div>
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-top: 0.5rem; pointer-events: none;">Currently Parked</div>
+                    <div class="click-hint" style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: #00d4ff; opacity: 0; transition: opacity 0.3s; pointer-events: none;">Click for details</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incident Analytics Charts -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+            <!-- 30-Day Incident Trend -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>30-Day Incident Trend</h3>
+                    <button onclick="showIncidentTrendReportOptions()" style="background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 500;">
+                        Download Report
+                    </button>
+                </div>
+                <canvas id="incidentTrendChart" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Incident Severity Distribution -->
+            <div class="card">
+                <h3>Incident Severity Distribution</h3>
+                <canvas id="severityChart" style="max-height: 300px;"></canvas>
+            </div>
         </div>
 
         <!-- Gate-wise Live Operations -->
@@ -529,7 +609,7 @@
                 <h2 id="modalTitle">Device Details</h2>
                 <span class="close-modal" onclick="closeDeviceModal()">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modalBody">
                 <!-- Report Type Selector -->
                 <div style="margin-bottom: 15px;">
                     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
@@ -590,6 +670,95 @@
 
 
     <script src="script.js"></script>
+    
+    <script>
+    // Ensure vehicle monitoring functions are available
+    window.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded, checking functions...');
+        console.log('showExpiredBadgeAttempts:', typeof showExpiredBadgeAttempts);
+        console.log('showSpeedViolations:', typeof showSpeedViolations);
+        console.log('showTankerMovement:', typeof showTankerMovement);
+        console.log('showRepeatOffenders:', typeof showRepeatOffenders);
+        
+        // If functions don't exist, define them here
+        if (typeof showExpiredBadgeAttempts === 'undefined') {
+            console.error('Functions not loaded from script.js, defining inline...');
+            
+            window.showExpiredBadgeAttempts = function() {
+                alert('showExpiredBadgeAttempts called');
+                const modal = document.getElementById('deviceModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+                
+                modalTitle.textContent = 'Expired Badge Access Attempts - Today';
+                modalBody.innerHTML = `
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <p style="color: #8b9dc3; margin-bottom: 15px;">Personnel who attempted access with expired badges</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Name</th>
+                                    <th>Badge ID</th>
+                                    <th>Gate</th>
+                                    <th>Expired Since</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>14:35</td>
+                                    <td style="color: #ff3366; font-weight: 600;">Ramesh Kumar</td>
+                                    <td>EMP-2847</td>
+                                    <td>Main Gate</td>
+                                    <td style="color: #ff3366;">3 days</td>
+                                </tr>
+                                <tr>
+                                    <td>13:20</td>
+                                    <td style="color: #ff3366; font-weight: 600;">Priya Sharma</td>
+                                    <td>CON-5621</td>
+                                    <td>LP Gate</td>
+                                    <td style="color: #ff3366;">1 day</td>
+                                </tr>
+                                <tr>
+                                    <td>11:45</td>
+                                    <td style="color: #ff3366; font-weight: 600;">Vijay Patel</td>
+                                    <td>VIS-8934</td>
+                                    <td>Cargo Gate</td>
+                                    <td style="color: #ff3366;">7 days</td>
+                                </tr>
+                                <tr>
+                                    <td>10:30</td>
+                                    <td style="color: #ff3366; font-weight: 600;">Sunita Reddy</td>
+                                    <td>CON-4512</td>
+                                    <td>Jokatte Gate</td>
+                                    <td style="color: #ff3366;">2 days</td>
+                                </tr>
+                                <tr>
+                                    <td>09:15</td>
+                                    <td style="color: #ff3366; font-weight: 600;">Anil Mehta</td>
+                                    <td>EMP-3298</td>
+                                    <td>E2 Gate</td>
+                                    <td style="color: #ff3366;">5 days</td>
+                                </tr>
+                                <tr>
+                                    <td>08:50</td>
+                                    <td style="color: #ff3366; font-weight: 600;">Kavita Desai</td>
+                                    <td>VIS-7621</td>
+                                    <td>Main Gate</td>
+                                    <td style="color: #ff3366;">1 day</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(255, 51, 102, 0.1); border-radius: 8px; color: #ff3366;">
+                            <strong>Total Expired Badge Attempts:</strong> 6 today
+                        </div>
+                    </div>
+                `;
+                modal.style.display = 'block';
+            };
+        }
+    });
+    </script>
 </body>
 </html>
 

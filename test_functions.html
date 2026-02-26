@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Functions</title>
+    <script src="script.js"></script>
+</head>
+<body>
+    <h1>Test Vehicle & Speed Monitoring Functions</h1>
+    
+    <button onclick="showSpeedViolations('plant')">Test Plant Area Speed</button>
+    <button onclick="showSpeedViolations('nonplant')">Test Non-Plant Speed</button>
+    <button onclick="showTankerMovement()">Test Tanker Movement</button>
+    <button onclick="showRepeatOffenders()">Test Repeat Offenders</button>
+    
+    <div id="deviceModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+        <div style="background: white; margin: 50px auto; padding: 20px; width: 80%; max-width: 800px; border-radius: 10px;">
+            <h2 id="modalTitle"></h2>
+            <div id="modalBody"></div>
+            <button onclick="document.getElementById('deviceModal').style.display='none'">Close</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -39,6 +39,41 @@ const MRPL_DEVICE_DATA = {
     ]
 };
 
+// Parking Vehicles Data - Global
+const parkingVehiclesData = [
+    // Main Gate P1 - Cars
+    { vehicle: 'KA-19-AB-1234', location: 'Main Gate P1', type: 'Car', entryTime: '08:45 AM', duration: '2h 15m' },
+    { vehicle: 'KA-20-CD-5678', location: 'Main Gate P1', type: 'Car', entryTime: '09:15 AM', duration: '1h 45m' },
+    { vehicle: 'KA-19-EF-9012', location: 'Main Gate P1', type: 'Car', entryTime: '07:30 AM', duration: '3h 30m' },
+    { vehicle: 'KA-20-GH-3456', location: 'Main Gate P1', type: 'Car', entryTime: '10:15 AM', duration: '0h 45m' },
+    { vehicle: 'KA-19-IJ-7890', location: 'Main Gate P1', type: 'Car', entryTime: '05:40 AM', duration: '5h 20m' },
+    { vehicle: 'KA-20-KL-2345', location: 'Main Gate P1', type: 'Car', entryTime: '09:50 AM', duration: '1h 10m' },
+    
+    // Main Gate P2 - Cars
+    { vehicle: 'KA-19-MN-6789', location: 'Main Gate P2', type: 'Car', entryTime: '08:10 AM', duration: '2h 50m' },
+    { vehicle: 'KA-20-OP-1234', location: 'Main Gate P2', type: 'Car', entryTime: '09:40 AM', duration: '1h 20m' },
+    { vehicle: 'KA-19-QR-5678', location: 'Main Gate P2', type: 'Car', entryTime: '06:45 AM', duration: '4h 15m' },
+    { vehicle: 'KA-20-ST-9012', location: 'Main Gate P2', type: 'Car', entryTime: '10:30 AM', duration: '0h 30m' },
+    { vehicle: 'KA-19-UV-3456', location: 'Main Gate P2', type: 'Car', entryTime: '04:15 AM', duration: '6h 45m' },
+    { vehicle: 'KA-20-WX-7890', location: 'Main Gate P2', type: 'Car', entryTime: '08:55 AM', duration: '2h 05m' },
+    { vehicle: 'TN-09-AB-1234', location: 'Main Gate P2', type: 'Car', entryTime: '02:30 AM', duration: '8h 30m' },
+    
+    // Main Gate P3 - Cars
+    { vehicle: 'KA-19-CD-2345', location: 'Main Gate P3', type: 'Car', entryTime: '09:05 AM', duration: '1h 55m' },
+    { vehicle: 'KA-20-EF-6789', location: 'Main Gate P3', type: 'Car', entryTime: '07:50 AM', duration: '3h 10m' },
+    { vehicle: 'KA-19-GH-1234', location: 'Main Gate P3', type: 'Car', entryTime: '10:10 AM', duration: '0h 50m' },
+    { vehicle: 'KA-20-IJ-5678', location: 'Main Gate P3', type: 'Car', entryTime: '08:20 AM', duration: '2h 40m' },
+    { vehicle: 'KA-19-KL-9012', location: 'Main Gate P3', type: 'Car', entryTime: '03:45 AM', duration: '7h 15m' },
+    
+    // E2 Gate - Trucks
+    { vehicle: 'KA-20-MN-5847', location: 'E2 Gate', type: 'Truck', entryTime: '09:30 AM', duration: '1h 30m' },
+    { vehicle: 'KA-19-OP-8765', location: 'E2 Gate', type: 'Truck', entryTime: '08:45 AM', duration: '2h 15m' },
+    { vehicle: 'KA-20-QR-4321', location: 'E2 Gate', type: 'Truck', entryTime: '10:15 AM', duration: '0h 45m' },
+    { vehicle: 'KA-19-ST-6543', location: 'E2 Gate', type: 'Truck', entryTime: '07:10 AM', duration: '3h 50m' },
+    { vehicle: 'KA-20-UV-9876', location: 'E2 Gate', type: 'Truck', entryTime: '05:40 AM', duration: '5h 20m' },
+    { vehicle: 'KA-19-WX-2468', location: 'E2 Gate', type: 'Truck', entryTime: '09:50 AM', duration: '1h 10m' }
+];
+
 // Calculate percentages
 function calculatePercentages() {
     const anprPercent = Math.round((MRPL_DEVICE_DATA.onlineANPR / MRPL_DEVICE_DATA.totalANPR) * 100);
@@ -62,6 +97,8 @@ function initializeMRPLData() {
     updateKPIFormats();
     
     populateGateHealthTable();
+    
+    populateGateOperationsTable(); // NEW: Populate gate operations table
     
     loadFallbackInventory();
     loadFallbackAnalytics(); 
@@ -512,7 +549,6 @@ function createGateDistributionChart(gateDeviceCounts) {
 
 // Fallback analytics when Google Sheets not connected
 function loadFallbackAnalytics() {
-    // Security-focused categories based on actual gate data
     const categories = {
         'Surveillance Systems': 230,      // All cameras (calculated from gates)
         'Access Control': 105,             // Barriers, Bollards, Tyre Killers, UVSS, Locks
@@ -565,7 +601,7 @@ async function initializeGoogleSheets() {
         
     } catch (error) {
         console.error('❌ Failed to connect:', error);
-        console.log('📊 Using fallback data');
+        console.log(' Using fallback data');
         initializeMRPLData();
     }
 }
@@ -589,6 +625,7 @@ function updateDashboardFromSheets() {
     
     // Update dashboard (skip camera KPIs)
     updateGateTableFromSheets();
+    populateGateOperationsTable(); // NEW: Update gate operations table
     updateDeviceInventoryTable(); // NEW: Show all devices
     updateDeviceAnalytics(); // NEW: Show device analytics
     generateAllDeviceCards(); // Regenerate device cards with Google Sheets data
@@ -810,11 +847,12 @@ window.addEventListener('DOMContentLoaded', () => {
     initializeCharts();
     simulateLiveData();
     initializeGoogleSheets(); // Try Google Sheets first, fallback to mock data
+    initializeIncidentCharts(); // Initialize incident analytics charts
     
     // Ensure gate health table is populated
     setTimeout(() => {
         if (document.getElementById('gateHealthTableBody').children.length === 0) {
-            console.log('⚠️ Table empty, populating now...');
+            console.log(' Table empty, populating now...');
             populateGateHealthTable();
         }
     }, 500);
@@ -1029,6 +1067,34 @@ function initializeCharts() {
 
 // Simulate live data updates
 function simulateLiveData() {
+    // Update gate operations table every 5 seconds
+    setInterval(() => {
+        const tbody = document.getElementById('gateOperationsTable');
+        if (!tbody || tbody.children.length === 0) return;
+        
+        Array.from(tbody.children).forEach(row => {
+            const cells = row.children;
+            if (cells.length >= 5) {
+                // Get current values
+                const entriesCell = cells[2];
+                const exitsCell = cells[3];
+                const insideCell = cells[4];
+                
+                const currentEntries = parseInt(entriesCell.textContent.replace(',', ''));
+                const currentExits = parseInt(exitsCell.textContent.replace(',', ''));
+                
+                // Randomly increment entries/exits
+                const newEntries = currentEntries + (Math.random() > 0.6 ? 1 : 0);
+                const newExits = currentExits + (Math.random() > 0.7 ? 1 : 0);
+                const newInside = newEntries - newExits;
+                
+                entriesCell.textContent = newEntries.toLocaleString();
+                exitsCell.textContent = newExits.toLocaleString();
+                insideCell.textContent = newInside;
+            }
+        });
+    }, 5000);
+    
     setInterval(() => {
         // Update live counters with random variations
         const entries = document.getElementById('totalEntries');
@@ -1992,10 +2058,57 @@ const deviceGateLocations = {
     // 'Diesel Generator Set': ['Main Gate', 'Cargo Gate']
 };
 
+// Populate Gate Operations Table with live data
+function populateGateOperationsTable() {
+    const tbody = document.getElementById('gateOperationsTable');
+    if (!tbody) {
+        console.error(' gateOperationsTable not found');
+        return;
+    }
+    
+    console.log('✅ Populating gate operations table...');
+    tbody.innerHTML = '';
+    
+    // Define gates to display (excluding PCR, Railway Siding, CISF Checking)
+    const gatesToShow = ['Main Gate', 'Cargo Gate', 'LP Gate', 'Jokatte Gate', 'E2 Gate'];
+    
+    gatesToShow.forEach(gateName => {
+        const devices = gateDeviceDistribution[gateName];
+        if (!devices) return;
+        
+        // Generate realistic entry/exit data based on gate size
+        const totalDevices = Object.values(devices).reduce((sum, count) => sum + count, 0);
+        
+        // Base entries on gate importance and device count
+        let baseEntries = 0;
+        if (gateName === 'Main Gate') baseEntries = 1200 + Math.floor(Math.random() * 100);
+        else if (gateName === 'LP Gate') baseEntries = 800 + Math.floor(Math.random() * 100);
+        else if (gateName === 'Jokatte Gate') baseEntries = 600 + Math.floor(Math.random() * 100);
+        else if (gateName === 'E2 Gate') baseEntries = 400 + Math.floor(Math.random() * 100);
+        else if (gateName === 'Cargo Gate') baseEntries = 250 + Math.floor(Math.random() * 50);
+        
+        const entries = baseEntries;
+        const exits = entries - Math.floor(Math.random() * 20) - 10; // Slightly fewer exits
+        const inside = entries - exits;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="font-weight: 600; color: #00d4ff;">${gateName}</td>
+            <td><span class="status-badge good">ACTIVE</span></td>
+            <td>${entries.toLocaleString()}</td>
+            <td>${exits.toLocaleString()}</td>
+            <td style="color: #00ff88; font-weight: bold;">${inside}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    console.log('✅ Gate operations table populated');
+}
+
 function populateGateHealthTable() {
     const container = document.getElementById('gateCardsContainer');
     if (!container) {
-        console.error('❌ gateCardsContainer not found');
+        console.error(' gateCardsContainer not found');
         return;
     }
     
@@ -2013,7 +2126,7 @@ function populateGateHealthTable() {
         
         // Status badge with symbol
         const statusClass = data.status === 'ONLINE' ? 'good' : 'warning';
-        const statusSymbol = data.status === 'ONLINE' ? '✅' : '⚠️';
+        const statusSymbol = data.status === 'ONLINE' ? '✅' : '';
         
         const card = document.createElement('div');
         card.className = 'gate-card';
@@ -2034,7 +2147,7 @@ function populateGateHealthTable() {
                 </div>
             </div>
             <div style="text-align: center; color: #8b9dc3; font-size: 0.85rem; padding: 0.5rem; background: rgba(0, 212, 255, 0.05); border-radius: 6px; cursor: pointer;">
-                🔍 Click to view details
+                 Click to view details
             </div>
         `;
         
@@ -2600,19 +2713,20 @@ function showKPIDetails(type) {
                             <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Gate</th>
                             <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Type</th>
                             <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Status</th>
+                            <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Data Source</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:35</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-20-MN-5678</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:32</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-19-AB-1234</td><td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Truck</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:28</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-20-XY-9876</td><td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:25</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-18-CD-4567</td><td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Bike</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:20</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-21-PQ-7890</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:15</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-19-RS-2345</td><td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Van</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:10</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-20-TU-6789</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:05</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-18-VW-3456</td><td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Truck</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:00</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-21-YZ-8901</td><td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:55</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-19-EF-4567</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Bike</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:35</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-20-MN-5678</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:32</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-19-AB-1234</td><td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Truck</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:28</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-20-XY-9876</td><td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:25</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-18-CD-4567</td><td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Bike</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:20</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-21-PQ-7890</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:15</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-19-RS-2345</td><td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Van</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:10</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-20-TU-6789</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:05</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-18-VW-3456</td><td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Truck</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:00</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-21-YZ-8901</td><td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Car</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:55</td><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">KA-19-EF-4567</td><td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Bike</td><td style="padding: 0.7rem; text-align: center;"><span class="status-badge good">Entered</span></td><td style="padding: 0.7rem; color: #00d4ff;">ANPR Camera</td></tr>
                     </tbody>
                 </table>
                 <div style="margin-top: 15px; padding: 10px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; color: #00d4ff;">
@@ -2633,19 +2747,21 @@ function showKPIDetails(type) {
                             <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Department</th>
                             <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Entry Time</th>
                             <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Entry Gate</th>
+                            <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Data Source</th>
+                            <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Attachment</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-2456</td><td style="padding: 0.7rem; color: #e0e0e0;">Rajesh Kumar</td><td style="padding: 0.7rem; color: #e0e0e0;">Operations</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:15</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-3789</td><td style="padding: 0.7rem; color: #e0e0e0;">Priya Sharma</td><td style="padding: 0.7rem; color: #e0e0e0;">Safety</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:20</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-1234</td><td style="padding: 0.7rem; color: #e0e0e0;">Amit Patel</td><td style="padding: 0.7rem; color: #e0e0e0;">Maintenance</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:25</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">LP Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-5678</td><td style="padding: 0.7rem; color: #e0e0e0;">Sunita Reddy</td><td style="padding: 0.7rem; color: #e0e0e0;">Admin</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:30</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-9012</td><td style="padding: 0.7rem; color: #e0e0e0;">Vikram Singh</td><td style="padding: 0.7rem; color: #e0e0e0;">Security</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:35</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">E2 Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #ffaa00; font-weight: 600;">CON-4567</td><td style="padding: 0.7rem; color: #e0e0e0;">Ramesh Yadav</td><td style="padding: 0.7rem; color: #e0e0e0;">Contractor</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:00</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Cargo Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #ffaa00; font-weight: 600;">CON-7890</td><td style="padding: 0.7rem; color: #e0e0e0;">Suresh Naik</td><td style="padding: 0.7rem; color: #e0e0e0;">Contractor</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:05</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Cargo Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-2345</td><td style="padding: 0.7rem; color: #e0e0e0;">Kavita Desai</td><td style="padding: 0.7rem; color: #e0e0e0;">HR</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:10</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-6789</td><td style="padding: 0.7rem; color: #e0e0e0;">Anil Mehta</td><td style="padding: 0.7rem; color: #e0e0e0;">Engineering</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:15</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Jokatte Gate</td></tr>
-                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #ff3366; font-weight: 600;">VIS-1234</td><td style="padding: 0.7rem; color: #e0e0e0;">John Smith</td><td style="padding: 0.7rem; color: #e0e0e0;">Visitor</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:30</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-2456</td><td style="padding: 0.7rem; color: #e0e0e0;">Rajesh Kumar</td><td style="padding: 0.7rem; color: #e0e0e0;">Operations</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:15</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Reader</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-3789</td><td style="padding: 0.7rem; color: #e0e0e0;">Priya Sharma</td><td style="padding: 0.7rem; color: #e0e0e0;">Safety</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:20</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Camera</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-1234</td><td style="padding: 0.7rem; color: #e0e0e0;">Amit Patel</td><td style="padding: 0.7rem; color: #e0e0e0;">Maintenance</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:25</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">LP Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Reader</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-5678</td><td style="padding: 0.7rem; color: #e0e0e0;">Sunita Reddy</td><td style="padding: 0.7rem; color: #e0e0e0;">Admin</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:30</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Camera</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-9012</td><td style="padding: 0.7rem; color: #e0e0e0;">Vikram Singh</td><td style="padding: 0.7rem; color: #e0e0e0;">Security</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:35</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">E2 Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Reader</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #ffaa00; font-weight: 600;">CON-4567</td><td style="padding: 0.7rem; color: #e0e0e0;">Ramesh Yadav</td><td style="padding: 0.7rem; color: #e0e0e0;">Contractor</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:00</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Cargo Gate</td><td style="padding: 0.7rem; color: #00d4ff;">ACS + FR</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #ffaa00; font-weight: 600;">CON-7890</td><td style="padding: 0.7rem; color: #e0e0e0;">Suresh Naik</td><td style="padding: 0.7rem; color: #e0e0e0;">Contractor</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:05</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Cargo Gate</td><td style="padding: 0.7rem; color: #00d4ff;">ACS + FR</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-2345</td><td style="padding: 0.7rem; color: #e0e0e0;">Kavita Desai</td><td style="padding: 0.7rem; color: #e0e0e0;">HR</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:10</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Reader</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #00ff88; font-weight: 600;">EMP-6789</td><td style="padding: 0.7rem; color: #e0e0e0;">Anil Mehta</td><td style="padding: 0.7rem; color: #e0e0e0;">Engineering</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:15</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Jokatte Gate</td><td style="padding: 0.7rem; color: #00d4ff;">FR Camera</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;"><td style="padding: 0.7rem; color: #ff3366; font-weight: 600;">VIS-1234</td><td style="padding: 0.7rem; color: #e0e0e0;">John Smith</td><td style="padding: 0.7rem; color: #e0e0e0;">Visitor</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:30</td><td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">Main Gate</td><td style="padding: 0.7rem; color: #00d4ff;">ACS + FR</td><td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td></tr>
                     </tbody>
                 </table>
                 <div style="margin-top: 15px; padding: 10px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; color: #00d4ff;">
@@ -2708,6 +2824,8 @@ function showKPIDetails(type) {
                             <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Gate</th>
                             <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Reason</th>
                             <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Action</th>
+                            <th style="padding: 0.8rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Data Source</th>
+                            <th style="padding: 0.8rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Attachment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2718,6 +2836,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Blacklisted Vehicle</td>
                             <td style="padding: 0.7rem; text-align: center;"><span class="status-badge critical">Denied</span></td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ANPR + ACS</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:45</td>
@@ -2725,6 +2845,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Expired Access Card</td>
                             <td style="padding: 0.7rem; text-align: center;"><span class="status-badge warning">Pending</span></td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ACS + FR Reader</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:20</td>
@@ -2732,6 +2854,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">RFID Tag Expired</td>
                             <td style="padding: 0.7rem; text-align: center;"><span class="status-badge critical">Denied</span></td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">RFID + ANPR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
    
                         <tr style="border-bottom: 1px solid #3d4a7a;">
@@ -2740,6 +2864,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Tailgating Attempt</td>
                             <td style="padding: 0.7rem; text-align: center;"><span class="status-badge critical">Denied</span></td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">FR Camera + Barrier</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">11:20</td>
@@ -2747,6 +2873,8 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Card Expired</td>
                             <td style="padding: 0.7rem; text-align: center;"><span class="status-badge warning">Verified</span></td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">ACS + FR Reader</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                     </tbody>
                 </table>
@@ -2767,6 +2895,8 @@ function showKPIDetails(type) {
                             <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Gate</th>
                             <th style="padding: 0.7rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Time</th>
                             <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Reason</th>
+                            <th style="padding: 0.7rem; text-align: left; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Data Source</th>
+                            <th style="padding: 0.7rem; text-align: center; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.9rem; font-weight: 600; background: #1e2746;">Attachment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2775,108 +2905,144 @@ function showKPIDetails(type) {
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">14:30</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Priya Sharma</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:45</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Malfunction</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Amit Patel</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">12:20</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Lost Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Sunita Reddy</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">11:50</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Vikram Singh</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">11:15</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Damaged</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Ramesh Yadav</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:40</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Kavita Desai</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:10</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Not Working</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Anil Mehta</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:55</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Suresh Naik</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:30</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Lost Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Deepak Joshi</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">09:05</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Malfunction</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Meena Iyer</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:45</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Ravi Shankar</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:20</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Damaged</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Pooja Nair</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">08:00</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Forgot ID Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Sanjay Gupta</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Jokatte Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">07:40</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Lost Card</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Lakshmi Menon</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">LP Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">07:15</td>
                             <td style="padding: 0.7rem; color: #ffaa00;">Phone Call Approval - Card Not Working</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Manual Entry + FR</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Emergency Response Team</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Main Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">15:20</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Entry - Fire Drill</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Emergency Override</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Medical Team</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">E2 Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">13:10</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Entry - Medical Emergency</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Emergency Override</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #3d4a7a;">
                             <td style="padding: 0.7rem; color: #e0e0e0;">Safety Inspector</td>
                             <td style="padding: 0.7rem; color: #e0e0e0;">Cargo Gate</td>
                             <td style="padding: 0.7rem; text-align: center; color: #e0e0e0;">10:25</td>
                             <td style="padding: 0.7rem; color: #00d4ff;">Emergency Entry - Safety Inspection</td>
+                            <td style="padding: 0.7rem; color: #00d4ff;">Emergency Override</td>
+                            <td style="padding: 0.7rem; text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
                         </tr>
                     </tbody>
                 </table>
@@ -3071,7 +3237,37 @@ function showIncidentDetailsCard(type) {
     modal.style.display = 'block';
 }
 
-// Show Incidents By Type with Filter
+// Incident data with all details
+const INCIDENT_DATA = {
+    'Speed Violation': [
+        { time: '14:35', vehicleNo: 'KA-20-MN-5847', location: 'Main Gate Entry', speed: '65 km/h', evidenceImage: 'IMG_5847.jpg', dataSource: 'Speed Gun + ANPR' },
+        { time: '10:30', vehicleNo: 'KA-19-AB-3421', location: 'Cargo Gate', speed: '58 km/h', evidenceImage: 'IMG_3421.jpg', dataSource: 'Speed Gun + ANPR' },
+        { time: '09:15', vehicleNo: 'KA-21-CD-8765', location: 'Main Gate', speed: '62 km/h', evidenceImage: 'IMG_8765.jpg', dataSource: 'Speed Gun + ANPR' },
+        { time: '07:20', vehicleNo: 'KA-18-EF-2134', location: 'Main Gate', speed: '70 km/h', evidenceImage: 'IMG_2134.jpg', dataSource: 'Speed Gun + ANPR' }
+    ],
+    'Unauthorized Access': [
+        { time: '13:20', location: 'LP Gate', evidenceSnapshot: 'SNAP_1320.jpg', actionTaken: 'Access Denied, Security Alerted' },
+        { time: '07:55', location: 'Main Gate', evidenceSnapshot: 'SNAP_0755.jpg', actionTaken: 'Vehicle Stopped, ID Verified' }
+    ],
+    'No Riding Helmet': [
+        { time: '12:15', location: 'Jokatte Gate', vehiclePlate: 'KA-20-GH-9876', evidenceSnapshot: 'SNAP_1215.jpg', dataSource: 'ANPR' },
+        { time: '06:45', location: 'LP Gate', vehiclePlate: 'KA-19-IJ-4567', evidenceSnapshot: 'SNAP_0645.jpg', dataSource: 'ANPR' }
+    ],
+    'Tailgating': [
+        { time: '11:45', location: 'Main Gate', vehicle1: 'KA-21-KL-7890', vehicle2: 'KA-20-MN-1234', evidenceSnapshot: 'SNAP_1145.jpg', actionTaken: 'Both vehicles stopped and warned', dataSource: 'ANPR + CCTV' }
+    ],
+    'No PPE Kit': [
+        { time: '09:50', location: 'E2 Gate', personnelID: 'EMP-2847', evidenceSnapshot: 'SNAP_0950.jpg', actionTaken: 'Entry Denied, Directed to PPE Station', dataSource: 'Face Recognition' }
+    ],
+    'Expired Badge': [
+        { time: '08:40', location: 'LP Gate', personnelName: 'Ramesh Kumar', badgeID: 'EMP-2847', expiredSince: '3 days', evidenceSnapshot: 'SNAP_0840.jpg', actionTaken: 'Access Denied, Directed to HR', dataSource: 'Badge Reader' }
+    ],
+    'Unauthorized Vehicle': [
+        { time: '07:55', location: 'Main Gate', vehicleNo: 'KA-18-OP-5678', evidenceSnapshot: 'SNAP_0755_V.jpg', actionTaken: 'Vehicle Stopped, Registration Verified', dataSource: 'ANPR + Gate System' }
+    ]
+};
+
+// Show Incidents By Type with Dropdown Filter
 function showIncidentsByType(period) {
     const modal = document.getElementById('deviceModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -3096,131 +3292,358 @@ function showIncidentsByType(period) {
     
     modalTitle.textContent = title;
     
+    // Store period globally for filtering
+    window.currentIncidentPeriod = period;
+    
     let content = `
-        <div style="margin-bottom: 15px;">
-            <label style="color: #00d4ff; margin-right: 10px;">Filter by Type:</label>
-            <select id="incidentTypeFilter" onchange="filterIncidentsByType()" style="padding: 0.5rem; background: #2d3561; color: #fff; border: 1px solid #00d4ff; border-radius: 6px;">
-                <option value="all">All Incidents</option>
-                <option value="Speed Violation">Speed Violation</option>
-                <option value="Unauthorized Access">Unauthorized Access</option>
-                <option value="No Riding Helmet">No Riding Helmet</option>
-                <option value="No PPE Kit">No PPE Kit</option>
-                <option value="Tailgating">Tailgating</option>
-                <option value="Expired Badge">Expired Badge</option>
-                <option value="Unauthorized Vehicle">Unauthorized Vehicle</option>
-            </select>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <label style="color: #00d4ff; margin-right: 10px; font-weight: 600;">Select Incident Type:</label>
+                <select id="incidentTypeFilter" onchange="filterIncidentsByType()" style="padding: 0.6rem 1rem; background: #2d3561; color: #fff; border: 2px solid #00d4ff; border-radius: 8px; font-size: 0.9rem; cursor: pointer;">
+                    <option value="all">All Incidents</option>
+                    <option value="Speed Violation">Speed Violation</option>
+                    <option value="Unauthorized Access">Unauthorized Access</option>
+                    <option value="No Riding Helmet">No Riding Helmet</option>
+                    <option value="Tailgating">Tailgating</option>
+                    <option value="No PPE Kit">No PPE Kit</option>
+                    <option value="Expired Badge">Expired Badge</option>
+                    <option value="Unauthorized Vehicle">Unauthorized Vehicle</option>
+                </select>
+            </div>
+            <button onclick="downloadIncidentReport()" style="padding: 0.6rem 1.2rem; background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                 Download Report
+            </button>
         </div>
         <div id="filteredIncidentsTable" style="max-height: 500px; overflow-y: auto;">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Type</th>
-                        <th>Location</th>
-                        <th>SLA</th>
-                        <th>Resolution</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="incidentTableBody">
-    `;
-    
-    allIncidents.forEach(inc => {
-        const statusColor = inc.status === 'Open' ? '#ffaa00' : '#00ff88';
-        const breachColor = inc.breach ? '#ff3366' : '#00ff88';
-        content += `<tr data-type="${inc.type}">
-            <td>${inc.time}</td>
-            <td>${inc.type}</td>
-            <td>${inc.location}</td>
-            <td>${inc.sla}</td>
-            <td style="color: ${breachColor};">${inc.resolution}${inc.breach ? ' ⚠️' : ''}</td>
-            <td style="color: ${statusColor};">${inc.status}</td>
-        </tr>`;
-    });
-    
-    content += `
-                </tbody>
-            </table>
+            <div id="incidentTableContainer"></div>
         </div>
     `;
     
     modalBody.innerHTML = content;
     modal.style.display = 'block';
+    
+    // Initial render with all incidents
+    filterIncidentsByType();
 }
 
-// Filter incidents by type
+// Filter incidents by type and render appropriate table
 function filterIncidentsByType() {
     const filterValue = document.getElementById('incidentTypeFilter').value;
-    const rows = document.querySelectorAll('#incidentTableBody tr');
+    const container = document.getElementById('incidentTableContainer');
     
-    rows.forEach(row => {
-        if (filterValue === 'all' || row.getAttribute('data-type') === filterValue) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
+    if (!container) return;
+    
+    let tableHTML = '';
+    
+    if (filterValue === 'all') {
+        // Show all incidents with all columns
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Type</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Vehicle No.</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Speed</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Action Taken</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        // Add all incidents
+        Object.keys(INCIDENT_DATA).forEach(type => {
+            INCIDENT_DATA[type].forEach((inc, idx) => {
+                const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+                tableHTML += `
+                    <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                        <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                        <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem;">${type}</td>
+                        <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                        <td style="padding: 0.7rem; color: #00ff88; font-size: 0.8rem;">${inc.vehicleNo || inc.vehiclePlate || inc.vehicle1 || 'NA'}</td>
+                        <td style="padding: 0.7rem; color: #ff3366; font-size: 0.8rem;">${inc.speed || 'NA'}</td>
+                        <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;">${inc.evidenceImage || inc.evidenceSnapshot || 'NA'}</td>
+                        <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.actionTaken || 'NA'}</td>
+                        <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.dataSource || 'NA'}</td>
+                    </tr>`;
+            });
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'Speed Violation') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Vehicle Number</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Speed</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Image</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['Speed Violation'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-weight: 600; font-size: 0.8rem;">${inc.vehicleNo}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #ff3366; font-weight: 600; font-size: 0.8rem;">${inc.speed}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceImage}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.dataSource}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'Unauthorized Access') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Snapshot</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Action Taken</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['Unauthorized Access'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceSnapshot}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.actionTaken}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'No Riding Helmet') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Vehicle Plate</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Snapshot</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['No Riding Helmet'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-weight: 600; font-size: 0.8rem;">${inc.vehiclePlate}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceSnapshot}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.dataSource}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'Tailgating') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Vehicle 1</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Vehicle 2</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Snapshot</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Action Taken</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['Tailgating'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-weight: 600; font-size: 0.8rem;">${inc.vehicle1}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-weight: 600; font-size: 0.8rem;">${inc.vehicle2}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceSnapshot}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.actionTaken}</td>
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.dataSource}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'No PPE Kit') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Personnel ID</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Snapshot</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Action Taken</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['No PPE Kit'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-weight: 600; font-size: 0.8rem;">${inc.personnelID}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceSnapshot}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.actionTaken}</td>
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.dataSource}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'Expired Badge') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Personnel Name</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Badge ID</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Expired Since</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Snapshot</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Action Taken</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['Expired Badge'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #ff3366; font-weight: 600; font-size: 0.8rem;">${inc.personnelName}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-size: 0.8rem;">${inc.badgeID}</td>
+                    <td style="padding: 0.7rem; color: #ff3366; font-size: 0.8rem;">${inc.expiredSince}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceSnapshot}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.actionTaken}</td>
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.dataSource}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+        
+    } else if (filterValue === 'Unauthorized Vehicle') {
+        tableHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Time</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Location</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Vehicle Number</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Evidence Snapshot</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Action Taken</th>
+                        <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem;">Data Source</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        INCIDENT_DATA['Unauthorized Vehicle'].forEach((inc, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            tableHTML += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.time}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${inc.location}</td>
+                    <td style="padding: 0.7rem; color: #00ff88; font-weight: 600; font-size: 0.8rem;">${inc.vehicleNo}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-size: 0.8rem; cursor: pointer;"> ${inc.evidenceSnapshot}</td>
+                    <td style="padding: 0.7rem; color: #ffaa00; font-size: 0.8rem;">${inc.actionTaken}</td>
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${inc.dataSource}</td>
+                </tr>`;
+        });
+        
+        tableHTML += `</tbody></table>`;
+    }
+    
+    container.innerHTML = tableHTML;
 }
 
-// Show SLA Breach Report Options
+// Download incident report
+function downloadIncidentReport() {
+    const filterValue = document.getElementById('incidentTypeFilter').value;
+    const period = window.currentIncidentPeriod || 'today';
+    
+    alert(`Downloading ${filterValue === 'all' ? 'All Incidents' : filterValue} report for ${period}...\n\nThis would generate a PDF with the filtered incident data.`);
+}
+
+// Show SLA Breach Report Options - Step 1: Date Selection
 function showSLABreachReportOptions() {
     const modal = document.createElement('div');
+    modal.id = 'slaDatePickerModal';
     modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10000;';
     
+    const today = new Date().toISOString().split('T')[0];
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
     modal.innerHTML = `
-        <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 2rem; border-radius: 12px; border: 2px solid #00d4ff; max-width: 500px; width: 90%;">
-            <h3 style="color: #00d4ff; margin-bottom: 1.5rem;">Download SLA Breach Report</h3>
+        <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 1.5rem; border-radius: 12px; border: 2px solid #00d4ff; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem;">
             
-            <div style="margin-bottom: 1.5rem;">
-                <button onclick="downloadSLABreachReport('today')" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
-                    Today's Report
-                </button>
-                <button onclick="downloadSLABreachReport('week')" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
-                    This Week's Report
-                </button>
-                <button onclick="downloadSLABreachReport('month')" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
-                    This Month's Report
-                </button>
-                <button onclick="showCustomDateRange()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #ff3366 0%, #ff6b9d 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
-                    Custom Date Range
-                </button>
+                <h3 style="color: #00d4ff; margin: 0; font-size: 1.1rem;">Select Date Range for SLA Breach Report</h3>
             </div>
             
-            <button onclick="this.closest('div').parentElement.remove()" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); color: #8b9dc3; border: 1px solid #3d4a7a; border-radius: 8px; cursor: pointer;">
-                Cancel
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-}
-
-// Show Custom Date Range Picker
-function showCustomDateRange() {
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10001;';
-    
-    const today = new Date().toISOString().split('T')[0];
-    
-    modal.innerHTML = `
-        <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 2rem; border-radius: 12px; border: 2px solid #00d4ff; max-width: 500px; width: 90%;">
-            <h3 style="color: #00d4ff; margin-bottom: 1.5rem;">Select Date Range</h3>
+            <div style="background: rgba(0, 212, 255, 0.1); padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #00d4ff;">
+                <p style="color: #8b9dc3; margin: 0; font-size: 0.8rem;">
+                     Select a date range to view SLA breaches and generate reports
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0.8rem;">
+                <label style="color: #00d4ff; display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.85rem;">From Date:</label>
+                <input type="date" id="slaFromDate" max="${today}" style="width: 100%; padding: 0.7rem; background: #2d3561; color: #fff; border: 2px solid #00d4ff; border-radius: 8px; font-size: 0.9rem;">
+            </div>
             
             <div style="margin-bottom: 1rem;">
-                <label style="color: #8b9dc3; display: block; margin-bottom: 0.5rem;">From Date:</label>
-                <input type="date" id="fromDate" value="${today}" style="width: 100%; padding: 0.8rem; background: #2d3561; color: #fff; border: 1px solid #00d4ff; border-radius: 6px;">
+                <label style="color: #00d4ff; display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.85rem;">To Date:</label>
+                <input type="date" id="slaToDate" max="${today}" style="width: 100%; padding: 0.7rem; background: #2d3561; color: #fff; border: 2px solid #00d4ff; border-radius: 8px; font-size: 0.9rem;">
             </div>
             
-            <div style="margin-bottom: 1.5rem;">
-                <label style="color: #8b9dc3; display: block; margin-bottom: 0.5rem;">To Date:</label>
-                <input type="date" id="toDate" value="${today}" style="width: 100%; padding: 0.8rem; background: #2d3561; color: #fff; border: 1px solid #00d4ff; border-radius: 6px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                <button onclick="setSLAQuickDate('today')" style="padding: 0.5rem; background: rgba(0, 212, 255, 0.2); color: #00d4ff; border: 1px solid #00d4ff; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(0, 212, 255, 0.3)'" onmouseout="this.style.background='rgba(0, 212, 255, 0.2)'">
+                    Today
+                </button>
+                <button onclick="setSLAQuickDate('week')" style="padding: 0.5rem; background: rgba(0, 212, 255, 0.2); color: #00d4ff; border: 1px solid #00d4ff; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(0, 212, 255, 0.3)'" onmouseout="this.style.background='rgba(0, 212, 255, 0.2)'">
+                    Last 7 Days
+                </button>
+                <button onclick="setSLAQuickDate('month')" style="padding: 0.5rem; background: rgba(0, 212, 255, 0.2); color: #00d4ff; border: 1px solid #00d4ff; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(0, 212, 255, 0.3)'" onmouseout="this.style.background='rgba(0, 212, 255, 0.2)'">
+                    Last 30 Days
+                </button>
             </div>
             
-            <button onclick="downloadCustomSLAReport()" style="width: 100%; padding: 1rem; margin-bottom: 0.8rem; background: linear-gradient(135deg, #ff3366 0%, #ff6b9d 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
-                Download Report
+            <button onclick="viewSLABreaches()" style="width: 100%; padding: 0.8rem; margin-bottom: 0.6rem; background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 212, 255, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 212, 255, 0.4)'">
+                 View SLA Breaches
             </button>
             
-            <button onclick="this.closest('div').parentElement.remove()" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); color: #8b9dc3; border: 1px solid #3d4a7a; border-radius: 8px; cursor: pointer;">
+            <button onclick="document.getElementById('slaDatePickerModal').remove()" style="width: 100%; padding: 0.7rem; background: rgba(255,255,255,0.1); color: #8b9dc3; border: 1px solid #3d4a7a; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 0.85rem;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
                 Cancel
             </button>
         </div>
@@ -3229,20 +3652,182 @@ function showCustomDateRange() {
     document.body.appendChild(modal);
 }
 
-// Download Custom SLA Report
-function downloadCustomSLAReport() {
-    const fromDate = document.getElementById('fromDate').value;
-    const toDate = document.getElementById('toDate').value;
+// View SLA Breaches for selected date range
+function viewSLABreaches() {
+    const fromDate = document.getElementById('slaFromDate').value;
+    const toDate = document.getElementById('slaToDate').value;
     
     if (!fromDate || !toDate) {
-        alert('Please select both dates');
+        alert(' Please select both dates');
         return;
     }
     
-    downloadSLABreachReport('custom', fromDate, toDate);
+    if (new Date(fromDate) > new Date(toDate)) {
+        alert(' From date cannot be after To date');
+        return;
+    }
     
-    // Close all modals
-    document.querySelectorAll('div[style*="position: fixed"]').forEach(m => m.remove());
+    // Close date picker modal
+    document.getElementById('slaDatePickerModal').remove();
+    
+    // Generate breach data for the selected period
+    const breachData = generateSLABreachData(fromDate, toDate);
+    
+    // Show breaches in modal
+    showSLABreachDetails(fromDate, toDate, breachData);
+}
+
+// Generate SLA breach data for date range
+function generateSLABreachData(fromDate, toDate) {
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    const daysDiff = Math.ceil((to - from) / (1000 * 60 * 60 * 24)) + 1;
+    
+    const incidentTypes = [
+        { type: 'Expired Badge', sla: 20, severity: 'Medium' },
+        { type: 'Unauthorized Vehicle', sla: 15, severity: 'High' },
+        { type: 'Speed Violation', sla: 30, severity: 'Low' },
+        { type: 'PPE Violation', sla: 20, severity: 'Medium' },
+        { type: 'Tailgating', sla: 15, severity: 'High' },
+        { type: 'Badge Not Visible', sla: 20, severity: 'Medium' },
+        { type: 'Unauthorized Access Attempt', sla: 15, severity: 'High' }
+    ];
+    
+    const gates = ['Main Gate', 'LP Gate', 'Jokatte Gate', 'Cargo Gate', 'E2 Gate'];
+    
+    const breaches = [];
+    const totalIncidents = daysDiff * 12; // ~12 incidents per day
+    const breachCount = Math.floor(totalIncidents * 0.15); // 15% breach rate
+    
+    for (let i = 0; i < breachCount; i++) {
+        const incident = incidentTypes[Math.floor(Math.random() * incidentTypes.length)];
+        const gate = gates[Math.floor(Math.random() * gates.length)];
+        const actualTime = incident.sla + Math.floor(Math.random() * 20) + 5; // 5-25 min over SLA
+        const delay = actualTime - incident.sla;
+        
+        // Random date within range
+        const randomDay = Math.floor(Math.random() * daysDiff);
+        const breachDate = new Date(from.getTime() + randomDay * 24 * 60 * 60 * 1000);
+        const time = `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`;
+        
+        breaches.push({
+            date: breachDate.toISOString().split('T')[0],
+            time: time,
+            type: incident.type,
+            location: gate,
+            slaTarget: incident.sla,
+            actualTime: actualTime,
+            delay: delay,
+            severity: incident.severity
+        });
+    }
+    
+    // Sort by date and time
+    breaches.sort((a, b) => {
+        const dateCompare = new Date(b.date) - new Date(a.date);
+        if (dateCompare !== 0) return dateCompare;
+        return b.time.localeCompare(a.time);
+    });
+    
+    return {
+        breaches: breaches,
+        totalIncidents: totalIncidents,
+        breachCount: breachCount,
+        complianceRate: Math.round(((totalIncidents - breachCount) / totalIncidents) * 100)
+    };
+}
+
+// Step 3: Show SLA Breach Details with Download Option
+function showSLABreachDetails(fromDate, toDate, breachData) {
+    const modal = document.createElement('div');
+    modal.id = 'slaBreachDetailsModal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 2rem;';
+    
+    const fromDateFormatted = new Date(fromDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const toDateFormatted = new Date(toDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    
+    let breachRows = '';
+    breachData.breaches.forEach((breach, index) => {
+        const bgColor = index % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+        const severityColor = breach.severity === 'High' ? '#ff3366' : breach.severity === 'Medium' ? '#ffaa00' : '#8b9dc3';
+        breachRows += `
+            <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                <td style="padding: 0.6rem; color: #8b9dc3; font-size: 0.8rem;">${breach.date}</td>
+                <td style="padding: 0.6rem; color: #8b9dc3; font-size: 0.8rem;">${breach.time}</td>
+                <td style="padding: 0.6rem; color: #e0e0e0; font-size: 0.8rem;">${breach.type}</td>
+                <td style="padding: 0.6rem; color: #00d4ff; font-size: 0.8rem;">${breach.location}</td>
+                <td style="padding: 0.6rem; color: #8b9dc3; font-size: 0.8rem; text-align: center;">${breach.slaTarget} min</td>
+                <td style="padding: 0.6rem; color: #ff3366; font-size: 0.8rem; font-weight: 600; text-align: center;">${breach.actualTime} min</td>
+                <td style="padding: 0.6rem; color: #ff3366; font-size: 0.8rem; font-weight: 700; text-align: center;">+${breach.delay} min</td>
+                <td style="padding: 0.6rem; text-align: center;"><span style="padding: 0.25rem 0.5rem; background: ${severityColor}22; color: ${severityColor}; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">${breach.severity}</span></td>
+            </tr>
+        `;
+    });
+    
+    modal.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 1.5rem; border-radius: 12px; border: 2px solid #00d4ff; max-width: 1200px; width: 95%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);">
+            
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.3rem;">
+                        
+
+                        <h3 style="color: #00d4ff; margin: 0; font-size: 1.1rem;">SLA Breach Report</h3>
+                    </div>
+                    <p style="color: #8b9dc3; margin: 0; font-size: 0.8rem;"> ${fromDateFormatted} to ${toDateFormatted}</p>
+                </div>
+                <button onclick="document.getElementById('slaBreachDetailsModal').remove()" style="background: transparent; border: none; color: #8b9dc3; font-size: 1.8rem; cursor: pointer; line-height: 1; padding: 0; width: 35px; height: 35px; border-radius: 50%; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='#8b9dc3';">&times;</button>
+            </div>
+            
+            <!-- Summary Cards -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1rem;">
+                <div style="background: rgba(0, 212, 255, 0.1); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #00d4ff;">
+                    <div style="color: #8b9dc3; font-size: 0.75rem; margin-bottom: 0.2rem;">Total Incidents</div>
+                    <div style="color: #00d4ff; font-size: 1.5rem; font-weight: bold;">${breachData.totalIncidents}</div>
+                </div>
+                <div style="background: rgba(255, 51, 102, 0.1); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #ff3366;">
+                    <div style="color: #8b9dc3; font-size: 0.75rem; margin-bottom: 0.2rem;">SLA Breaches</div>
+                    <div style="color: #ff3366; font-size: 1.5rem; font-weight: bold;">${breachData.breachCount}</div>
+                </div>
+                <div style="background: rgba(0, 255, 136, 0.1); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #00ff88;">
+                    <div style="color: #8b9dc3; font-size: 0.75rem; margin-bottom: 0.2rem;">Compliance Rate</div>
+                    <div style="color: #00ff88; font-size: 1.5rem; font-weight: bold;">${breachData.complianceRate}%</div>
+                </div>
+            </div>
+            
+            <!-- Table -->
+            <div style="flex: 1; overflow-y: auto; margin-bottom: 1rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 0.5rem;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                        <tr>
+                            <th style="text-align: left; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Date</th>
+                            <th style="text-align: left; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Time</th>
+                            <th style="text-align: left; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Incident Type</th>
+                            <th style="text-align: left; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Location</th>
+                            <th style="text-align: center; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">SLA Target</th>
+                            <th style="text-align: center; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Actual Time</th>
+                            <th style="text-align: center; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Delay</th>
+                            <th style="text-align: center; padding: 0.6rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; font-weight: 600;">Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${breachRows}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Download Button -->
+            <button onclick="downloadSLABreachReport('${fromDate}', '${toDate}', ${JSON.stringify(breachData).replace(/"/g, '&quot;')})" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 212, 255, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 212, 255, 0.4)'">
+                Download PDF Report
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Store breach data globally for download
+    window.currentSLABreachData = { fromDate, toDate, breachData };
 }
 
 // Show SLA Breach Details
@@ -3251,10 +3836,10 @@ function showSLABreachDetails() {
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = modal.querySelector('.modal-body');
     
-    const title = 'SLA Breach Report - Today';
+    const title = 'SLA Breach Report';
     const content = `
         <div style="max-height: 500px; overflow-y: auto;">
-            <p style="color: #ff3366; margin-bottom: 15px; font-weight: 600;">⚠️ 2 incidents breached SLA today</p>
+            <p style="color: #ff3366; margin-bottom: 15px; font-weight: 600;"> 2 incidents breached SLA today</p>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -3297,81 +3882,167 @@ function showSLABreachDetails() {
 }
 
 // Download SLA Breach Report
-function downloadSLABreachReport(period = 'today', fromDate = null, toDate = null) {
+function downloadSLABreachReport(fromDate, toDate, breachData) {
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const dateStr = new Date().toLocaleDateString();
     
-    let reportTitle = '';
-    let dateRange = '';
+    const fromDateFormatted = new Date(fromDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const toDateFormatted = new Date(toDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     
-    if (period === 'today') {
-        reportTitle = "Today's SLA Breach Report";
-        dateRange = dateStr;
-    } else if (period === 'week') {
-        reportTitle = "This Week's SLA Breach Report";
-        dateRange = 'Last 7 Days';
-    } else if (period === 'month') {
-        reportTitle = "This Month's SLA Breach Report";
-        dateRange = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    } else if (period === 'custom') {
-        reportTitle = "Custom SLA Breach Report";
-        dateRange = `${fromDate} to ${toDate}`;
-    }
+    // Header with gradient background
+    doc.setFillColor(255, 51, 102);
+    doc.rect(0, 0, 210, 45, 'F');
     
-    // Header
-    doc.setFillColor(0, 212, 255);
-    doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
+    doc.setFontSize(20);
+    doc.setFont(undefined, 'bold');
     doc.text('MRPL - SLA Breach Report', 105, 15, { align: 'center' });
-    doc.setFontSize(12);
-    doc.text(reportTitle, 105, 25, { align: 'center' });
-    doc.text(`Period: ${dateRange}`, 105, 32, { align: 'center' });
     
-    // Summary
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Period: ${fromDateFormatted} to ${toDateFormatted}`, 105, 25, { align: 'center' });
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 32, { align: 'center' });
+    doc.text(`Total Days: ${Math.ceil((new Date(toDate) - new Date(fromDate)) / (1000 * 60 * 60 * 24)) + 1}`, 105, 39, { align: 'center' });
+    
+    // Summary Section
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(14);
-    doc.text('SLA Breach Summary - Today', 14, 50);
+    doc.setFont(undefined, 'bold');
+    doc.text('Executive Summary', 14, 55);
     
     doc.setFontSize(10);
-    doc.text('Total Incidents: 12', 14, 60);
-    doc.text('Resolved Within SLA: 10 (83%)', 14, 67);
-    doc.setTextColor(255, 51, 102);
-    doc.text('SLA Breaches: 2 (17%)', 14, 74);
-    
-    // Table
+    doc.setFont(undefined, 'normal');
     doc.setTextColor(0, 0, 0);
+    doc.text(`Total Incidents: ${breachData.totalIncidents}`, 14, 65);
+    doc.setTextColor(0, 255, 136);
+    doc.text(`Resolved Within SLA: ${breachData.totalIncidents - breachData.breachCount} (${breachData.complianceRate}%)`, 14, 72);
+    doc.setTextColor(255, 51, 102);
+    doc.text(`SLA Breaches: ${breachData.breachCount} (${100 - breachData.complianceRate}%)`, 14, 79);
+    
+    // Breach Details Table
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Breach Details', 14, 90);
+    
+    const tableData = breachData.breaches.map(breach => [
+        breach.date,
+        breach.time,
+        breach.type,
+        breach.location,
+        `${breach.slaTarget} min`,
+        `${breach.actualTime} min`,
+        `+${breach.delay} min`,
+        breach.severity
+    ]);
+    
     doc.autoTable({
-        startY: 85,
-        head: [['Time', 'Incident Type', 'Location', 'SLA Target', 'Actual Time', 'Delay']],
-        body: [
-            ['08:40', 'Expired Badge', 'LP Gate', '20 min', '35 min', '+15 min'],
-            ['07:55', 'Unauthorized Vehicle', 'Main Gate', '15 min', '22 min', '+7 min']
-        ],
+        startY: 95,
+        head: [['Date', 'Time', 'Incident Type', 'Location', 'SLA Target', 'Actual', 'Delay', 'Severity']],
+        body: tableData,
         theme: 'grid',
-        headStyles: { fillColor: [0, 212, 255], textColor: [255, 255, 255] },
-        styles: { fontSize: 9 },
+        headStyles: {
+            fillColor: [255, 51, 102],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 9
+        },
+        styles: {
+            fontSize: 8,
+            cellPadding: 3
+        },
         columnStyles: {
-            4: { textColor: [255, 51, 102], fontStyle: 'bold' },
-            5: { textColor: [255, 51, 102], fontStyle: 'bold' }
+            0: { cellWidth: 22 },
+            1: { cellWidth: 15 },
+            2: { cellWidth: 40 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center', textColor: [255, 51, 102], fontStyle: 'bold' },
+            6: { cellWidth: 18, halign: 'center', textColor: [255, 51, 102], fontStyle: 'bold' },
+            7: { cellWidth: 20, halign: 'center' }
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
         }
     });
     
-    // SLA Standards
-    const finalY = doc.lastAutoTable.finalY + 15;
+    let finalY = doc.lastAutoTable.finalY + 15;
+    
+    // Severity Breakdown
+    const highSeverity = breachData.breaches.filter(b => b.severity === 'High').length;
+    const mediumSeverity = breachData.breaches.filter(b => b.severity === 'Medium').length;
+    const lowSeverity = breachData.breaches.filter(b => b.severity === 'Low').length;
+    
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(12);
-    doc.text('SLA Standards:', 14, finalY);
+    doc.setFont(undefined, 'bold');
+    doc.text('Breach Analysis by Severity', 14, finalY);
+    
+    doc.autoTable({
+        startY: finalY + 5,
+        head: [['Severity', 'Count', 'Percentage']],
+        body: [
+            ['High', highSeverity, `${((highSeverity/breachData.breachCount)*100).toFixed(1)}%`],
+            ['Medium', mediumSeverity, `${((mediumSeverity/breachData.breachCount)*100).toFixed(1)}%`],
+            ['Low', lowSeverity, `${((lowSeverity/breachData.breachCount)*100).toFixed(1)}%`]
+        ],
+        theme: 'grid',
+        headStyles: {
+            fillColor: [0, 212, 255],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+        },
+        styles: {
+            fontSize: 10,
+            cellPadding: 4
+        }
+    });
+    
+    finalY = doc.lastAutoTable.finalY + 15;
+    
+    // SLA Standards
+    if (finalY > 250) {
+        doc.addPage();
+        finalY = 20;
+    }
+    
+    doc.setTextColor(0, 212, 255);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('SLA Standards Reference', 14, finalY);
+    
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(9);
-    doc.text('• High Severity (Unauthorized Access, Security Breach): 15 minutes', 14, finalY + 8);
-    doc.text('• Medium Severity (Badge Issues, PPE Violations): 20 minutes', 14, finalY + 15);
+    doc.setFont(undefined, 'normal');
+    doc.text('• High Severity (Unauthorized Access, Security Breach, Tailgating): 15 minutes', 14, finalY + 8);
+    doc.text('• Medium Severity (Badge Issues, PPE Violations, Expired Badge): 20 minutes', 14, finalY + 15);
     doc.text('• Low Severity (Speed Violations, Minor Infractions): 30 minutes', 14, finalY + 22);
     
-    // Footer
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text('MRPL - Integrated Security Command & Control System', 105, 285, { align: 'center' });
+    // Footer on all pages
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+            `Page ${i} of ${pageCount} | MRPL - Integrated Security Command & Control System`,
+            doc.internal.pageSize.getWidth() / 2,
+            doc.internal.pageSize.getHeight() - 10,
+            { align: 'center' }
+        );
+    }
     
-    doc.save(`MRPL_SLA_Breach_Report_${dateStr.replace(/\//g, '-')}.pdf`);
+    // Save PDF
+    const filename = `MRPL_SLA_Breach_Report_${fromDate}_to_${toDate}.pdf`;
+    doc.save(filename);
+    
+    // Show success message
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%); color: #1a1f3a; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; z-index: 20000; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);';
+    successMsg.textContent = `✅ Report downloaded: ${filename}`;
+    document.body.appendChild(successMsg);
+    
+    setTimeout(() => successMsg.remove(), 3000);
 }
 
 // Show CCTV System Health
@@ -3870,48 +4541,48 @@ function showShiftData(shift) {
     
     if (shift === 'shiftA') {
         shiftName = 'Shift A';
-        shiftTime = '05:00 - 13:00';
+        shiftTime = '06:00 - 14:00';
         employeeData = [
-            { empId: 'EMP-2456', time: '04:52', gate: 'Main Gate' },
-            { empId: 'EMP-3789', time: '04:55', gate: 'Main Gate' },
-            { empId: 'EMP-1234', time: '04:57', gate: 'LP Gate' },
-            { empId: 'EMP-5678', time: '04:58', gate: 'Main Gate' },
-            { empId: 'EMP-9012', time: '05:00', gate: 'E2 Gate' },
-            { empId: 'EMP-2345', time: '05:01', gate: 'Jokatte Gate' },
-            { empId: 'EMP-6789', time: '05:02', gate: 'Main Gate' },
-            { empId: 'EMP-4567', time: '05:03', gate: 'LP Gate' },
-            { empId: 'EMP-7890', time: '05:07', gate: 'Cargo Gate' },
-            { empId: 'EMP-1357', time: '05:12', gate: 'Main Gate' }
+            { empId: 'EMP-2456', time: '05:22', gate: 'Main Gate' },
+            { empId: 'EMP-3789', time: '05:25', gate: 'Main Gate' },
+            { empId: 'EMP-1234', time: '05:27', gate: 'LP Gate' },
+            { empId: 'EMP-5678', time: '05:28', gate: 'Main Gate' },
+            { empId: 'EMP-9012', time: '05:30', gate: 'E2 Gate' },
+            { empId: 'EMP-2345', time: '05:35', gate: 'Jokatte Gate' },
+            { empId: 'EMP-6789', time: '05:39', gate: 'Main Gate' },
+            { empId: 'EMP-4567', time: '05:43', gate: 'LP Gate' },
+            { empId: 'EMP-7890', time: '05:47', gate: 'Cargo Gate' },
+            { empId: 'EMP-1357', time: '05:52', gate: 'Main Gate' }
         ];
     } else if (shift === 'shiftB') {
         shiftName = 'Shift B';
-        shiftTime = '13:00 - 21:00';
+        shiftTime = '14:00 - 22:00';
         employeeData = [
-            { empId: 'EMP-8901', time: '12:55', gate: 'Main Gate' },
-            { empId: 'EMP-2468', time: '12:57', gate: 'LP Gate' },
-            { empId: 'EMP-1357', time: '12:58', gate: 'Main Gate' },
-            { empId: 'EMP-9753', time: '13:00', gate: 'Jokatte Gate' },
-            { empId: 'EMP-8642', time: '13:01', gate: 'E2 Gate' },
-            { empId: 'EMP-7531', time: '13:02', gate: 'Main Gate' },
-            { empId: 'EMP-6420', time: '13:03', gate: 'Cargo Gate' },
-            { empId: 'EMP-5319', time: '13:05', gate: 'LP Gate' },
-            { empId: 'EMP-4208', time: '13:08', gate: 'Main Gate' },
-            { empId: 'EMP-3197', time: '13:15', gate: 'Jokatte Gate' }
+            { empId: 'EMP-8901', time: '13:35', gate: 'Main Gate' },
+            { empId: 'EMP-2468', time: '13:37', gate: 'LP Gate' },
+            { empId: 'EMP-1357', time: '13:38', gate: 'Main Gate' },
+            { empId: 'EMP-9753', time: '13:40', gate: 'Jokatte Gate' },
+            { empId: 'EMP-8642', time: '13:41', gate: 'E2 Gate' },
+            { empId: 'EMP-7531', time: '13:45', gate: 'Main Gate' },
+            { empId: 'EMP-6420', time: '13:48', gate: 'Cargo Gate' },
+            { empId: 'EMP-5319', time: '13:55', gate: 'LP Gate' },
+            { empId: 'EMP-4208', time: '13:58', gate: 'Main Gate' },
+            { empId: 'EMP-3197', time: '13:58', gate: 'Jokatte Gate' }
         ];
     } else if (shift === 'shiftC') {
         shiftName = 'Shift C';
-        shiftTime = '21:00 - 05:00';
+        shiftTime = '22:00 - 06:00';
         employeeData = [
-            { empId: 'EMP-2086', time: '20:55', gate: 'Main Gate' },
-            { empId: 'EMP-1975', time: '20:57', gate: 'LP Gate' },
-            { empId: 'EMP-8864', time: '20:58', gate: 'Main Gate' },
-            { empId: 'EMP-7753', time: '21:00', gate: 'E2 Gate' },
-            { empId: 'EMP-6642', time: '21:01', gate: 'Main Gate' },
-            { empId: 'EMP-5531', time: '21:02', gate: 'Jokatte Gate' },
-            { empId: 'EMP-4420', time: '21:03', gate: 'LP Gate' },
-            { empId: 'EMP-3319', time: '21:06', gate: 'Main Gate' },
-            { empId: 'EMP-2208', time: '21:10', gate: 'Cargo Gate' },
-            { empId: 'EMP-1197', time: '21:18', gate: 'Main Gate' }
+            { empId: 'EMP-2086', time: '21:25', gate: 'Main Gate' },
+            { empId: 'EMP-1975', time: '21:27', gate: 'LP Gate' },
+            { empId: 'EMP-8864', time: '21:28', gate: 'Main Gate' },
+            { empId: 'EMP-7753', time: '21:30', gate: 'E2 Gate' },
+            { empId: 'EMP-6642', time: '21:31', gate: 'Main Gate' },
+            { empId: 'EMP-5531', time: '21:32', gate: 'Jokatte Gate' },
+            { empId: 'EMP-4420', time: '21:33', gate: 'LP Gate' },
+            { empId: 'EMP-3319', time: '21:36', gate: 'Main Gate' },
+            { empId: 'EMP-2208', time: '21:40', gate: 'Cargo Gate' },
+            { empId: 'EMP-1197', time: '21:48', gate: 'Main Gate' }
         ];
     } else if (shift === 'general') {
         shiftName = 'General Shift';
@@ -4129,11 +4800,6 @@ function showCategoryData(category) {
     }
 
 
-// Initialize Charts when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initializeIncidentCharts();
-});
-
 // Initialize Incident Analytics Charts
 function initializeIncidentCharts() {
     // 30-Day Incident Trend Chart
@@ -4150,8 +4816,9 @@ function initializeIncidentCharts() {
                     backgroundColor: 'rgba(0, 212, 255, 0.1)',
                     tension: 0.4,
                     fill: true,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#00d4ff'
+                    pointRadius: 5,
+                    pointBackgroundColor: '#00d4ff',
+                    pointHoverRadius: 7
                 }, {
                     label: 'SLA Breaches',
                     data: [1, 0, 1, 0, 0, 2, 1, 0, 1, 0, 1, 1, 2],
@@ -4159,8 +4826,9 @@ function initializeIncidentCharts() {
                     backgroundColor: 'rgba(255, 51, 102, 0.1)',
                     tension: 0.4,
                     fill: true,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#ff3366'
+                    pointRadius: 5,
+                    pointBackgroundColor: '#ff3366',
+                    pointHoverRadius: 7
                 }]
             },
             options: {
@@ -4171,19 +4839,29 @@ function initializeIncidentCharts() {
                         display: true,
                         position: 'top',
                         labels: {
-                            color: '#8b9dc3',
-                            font: { size: 11 }
+                            color: '#e0e0e0',
+                            font: { size: 12 },
+                            padding: 15
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 31, 58, 0.95)',
+                        titleColor: '#00d4ff',
+                        bodyColor: '#e0e0e0',
+                        borderColor: '#00d4ff',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { color: '#8b9dc3', font: { size: 10 } },
+                        ticks: { color: '#8b9dc3', font: { size: 11 } },
                         grid: { color: 'rgba(61, 74, 122, 0.3)' }
                     },
                     x: {
-                        ticks: { color: '#8b9dc3', font: { size: 10 } },
+                        ticks: { color: '#8b9dc3', font: { size: 11 } },
                         grid: { color: 'rgba(61, 74, 122, 0.3)' }
                     }
                 }
@@ -4191,9 +4869,37 @@ function initializeIncidentCharts() {
         });
     }
 
-    // Severity Breakdown Chart
+    // Severity Breakdown Chart with Tooltips
     const severityCtx = document.getElementById('severityChart');
     if (severityCtx) {
+        // Define incident categories for each severity - Refinery Security Context
+        const incidentCategories = {
+            'High': [
+                'Unauthorized Access',
+                'Security Breach',
+                'Unauthorized Vehicle Entry',
+                'Tailgating',
+                'No PPE Kit',
+                'Blacklisted Vehicle Entry',
+                'Explosive/Hazardous Material Detection'
+            ],
+            'Medium': [
+                'Expired Badge Access Attempt',
+                
+                'Badge Not Visible',
+                'Speed Violation in Plant Area',
+                // 'Improper Vehicle Parking',
+                'Restricted Area Entry Without Permission'
+            ],
+            'Low': [
+                'No Riding Helmet',
+                'Speed Violation in Non-Plant Area',
+                // 'Minor Documentation Issues',
+                'Late Badge Renewal',
+                'Visitor Protocol Violation'
+            ]
+        };
+        
         new Chart(severityCtx, {
             type: 'bar',
             data: {
@@ -4220,6 +4926,28 @@ function initializeIncidentCharts() {
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 31, 58, 0.95)',
+                        titleColor: '#00d4ff',
+                        bodyColor: '#e0e0e0',
+                        borderColor: '#00d4ff',
+                        borderWidth: 2,
+                        padding: 15,
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label + ' Severity Incidents';
+                            },
+                            label: function(context) {
+                                return 'Total: ' + context.parsed.y + ' incidents';
+                            },
+                            afterLabel: function(context) {
+                                const severity = context.label;
+                                const categories = incidentCategories[severity];
+                                return '\n\nIncident Types:\n' + categories.map(cat => '• ' + cat).join('\n');
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -4227,13 +4955,19 @@ function initializeIncidentCharts() {
                         beginAtZero: true,
                         ticks: { 
                             color: '#8b9dc3',
-                            font: { size: 10 },
+                            font: { size: 11 },
                             stepSize: 1
                         },
-                        grid: { color: 'rgba(61, 74, 122, 0.3)' }
+                        grid: { color: 'rgba(61, 74, 122, 0.3)' },
+                        title: {
+                            display: true,
+                            text: 'Number of Incidents',
+                            color: '#8b9dc3',
+                            font: { size: 12 }
+                        }
                     },
                     x: {
-                        ticks: { color: '#8b9dc3', font: { size: 11 } },
+                        ticks: { color: '#e0e0e0', font: { size: 12, weight: 'bold' } },
                         grid: { display: false }
                     }
                 }
@@ -4241,3 +4975,1130 @@ function initializeIncidentCharts() {
         });
     }
 }
+
+// Command & Control Functions
+function showSecurityStatusDetails() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalTitle.textContent = 'Overall Security Status - Details';
+    modalBody.innerHTML = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00ff88; font-weight: bold;">NORMAL</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Current Status</div>
+                </div>
+                <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00d4ff; font-weight: bold;">12</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Active Incidents</div>
+                </div>
+                <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00d4ff; font-weight: bold;">96.8%</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">System Health</div>
+                </div>
+            </div>
+            
+            <h4 style="color: #00d4ff; margin: 1.5rem 0 1rem 0;">System Status Overview</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Status</th>
+                        <th>Health</th>
+                        <th>Last Check</th>
+                        <th>Data Source</th>
+                        <th>Attachment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CCTV Surveillance</td>
+                        <td><span class="status-badge good">OPERATIONAL</span></td>
+                        <td style="color: #00ff88;">96.8%</td>
+                        <td>2 min ago</td>
+                        <td style="color: #00d4ff;">Axxon One VMS</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                    </tr>
+                    <tr>
+                        <td>Access Control</td>
+                        <td><span class="status-badge good">OPERATIONAL</span></td>
+                        <td style="color: #00ff88;">98.5%</td>
+                        <td>1 min ago</td>
+                        <td style="color: #00d4ff;">ACS + Barriers</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                    </tr>
+                    <tr>
+                        <td>ANPR System</td>
+                        <td><span class="status-badge good">OPERATIONAL</span></td>
+                        <td style="color: #00ff88;">100%</td>
+                        <td>3 min ago</td>
+                        <td style="color: #00d4ff;">ANPR Cameras</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                    </tr>
+                    <tr>
+                        <td>Face Recognition</td>
+                        <td><span class="status-badge good">OPERATIONAL</span></td>
+                        <td style="color: #00ff88;">97.2%</td>
+                        <td>2 min ago</td>
+                        <td style="color: #00d4ff;">FR Readers + Cameras</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                    </tr>
+                    <tr>
+                        <td>Speed Detection</td>
+                        <td><span class="status-badge good">OPERATIONAL</span></td>
+                        <td style="color: #00ff88;">95.0%</td>
+                        <td>5 min ago</td>
+                        <td style="color: #00d4ff;">Speed Radar + ANPR</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;">📷 View</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function showCCTVSystemHealth() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalTitle.textContent = 'CCTV System Health - Detailed Report';
+    modalBody.innerHTML = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00ff88; font-weight: bold;">245</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Online Cameras</div>
+                </div>
+                <div style="background: rgba(255, 51, 102, 0.1); border: 2px solid rgba(255, 51, 102, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #ff3366; font-weight: bold;">8</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Offline Cameras</div>
+                </div>
+                <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00d4ff; font-weight: bold;">96.8%</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">System Health</div>
+                </div>
+            </div>
+            
+            <h4 style="color: #00d4ff; margin: 1.5rem 0 1rem 0;">Cameras Under Maintenance</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Camera ID</th>
+                        <th>Location</th>
+                        <th>Issue</th>
+                        <th>Since</th>
+                        <th>Data Source</th>
+                        <th>Attachment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: #ff3366;">CAM-045</td>
+                        <td>Main Gate - Entry</td>
+                        <td>Lens Cleaning Required</td>
+                        <td>2 hours ago</td>
+                        <td style="color: #00d4ff;">Axxon One VMS</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366;">CAM-112</td>
+                        <td>LP Gate - Exit</td>
+                        <td>Network Issue</td>
+                        <td>4 hours ago</td>
+                        <td style="color: #00d4ff;">Axxon One VMS</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366;">CAM-178</td>
+                        <td>Cargo Area</td>
+                        <td>Power Supply</td>
+                        <td>1 hour ago</td>
+                        <td style="color: #00d4ff;">Axxon One VMS</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366;">CAM-203</td>
+                        <td>Perimeter - North</td>
+                        <td>Camera Adjustment</td>
+                        <td>30 min ago</td>
+                        <td style="color: #00d4ff;">Axxon One VMS</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366;">CAM-234</td>
+                        <td>Tank Farm</td>
+                        <td>Firmware Update</td>
+                        <td>3 hours ago</td>
+                        <td style="color: #00d4ff;">Axxon One VMS</td>
+                        <td style="text-align: center; color: #00d4ff; cursor: pointer;"> View</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function showGateProcessingDetails() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalTitle.textContent = 'Gate Processing Time - Detailed Analysis';
+    modalBody.innerHTML = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 1rem; text-align: center; margin-bottom: 1.5rem;">
+                <div style="font-size: 2.5rem; color: #00d4ff; font-weight: bold;">1 minute</div>
+                <div style="font-size: 0.9rem; color: #8b9dc3; margin-top: 0.5rem;">Average Processing Time (All Gates)</div>
+            </div>
+            
+            <h4 style="color: #00d4ff; margin: 1.5rem 0 1rem 0;">Gate-wise Processing Time</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Gate Name</th>
+                        <th>Avg Time</th>
+                        <th>Vehicles Today</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600; color: #00d4ff;">Main Gate</td>
+                        <td style="color: #00ff88;">55s</td>
+                        <td>1,245</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #00d4ff;">Cargo Gate</td>
+                        <td style="color: #00ff88;">1m 10s</td>
+                        <td>285</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #00d4ff;">LP Gate</td>
+                        <td style="color: #00ff88;">50s</td>
+                        <td>856</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #00d4ff;">Jokatte Gate</td>
+                        <td style="color: #00ff88;">1m 5s</td>
+                        <td>642</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #00d4ff;">E2 Gate</td>
+                        <td style="color: #ffaa00;">1m 25s</td>
+                        <td>198</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+    
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+// Vehicle & Speed Monitoring Functions
+function showExpiredBadgeAttempts() {
+    console.log('showExpiredBadgeAttempts called');
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    console.log('Modal element:', modal);
+    
+    modalTitle.textContent = 'Expired Badge Access Attempts - Today';
+    modalBody.innerHTML = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <p style="color: #8b9dc3; margin-bottom: 15px;">Personnel who attempted access with expired badges</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Name</th>
+                        <th>Badge ID</th>
+                        <th>Gate</th>
+                        <th>Expired Since</th>
+                        <th>Action Taken</th>
+                        <th>Remarks</th>
+                        <th>Data Source</th>
+                        <th>Attachment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>14:35</td>
+                        <td style="color: #ff3366; font-weight: 600;">Ramesh Kumar</td>
+                        <td>EMP-2847</td>
+                        <td>Main Gate</td>
+                        <td style="color: #ff3366;">3 days</td>
+                        <td style="color: #ffaa00;">Access Denied</td>
+                        <td>Directed to HR for renewal</td>
+                        <td style="color: #00d4ff;">FR Reader</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td>13:20</td>
+                        <td style="color: #ff3366; font-weight: 600;">Priya Sharma</td>
+                        <td>CON-5621</td>
+                        <td>LP Gate</td>
+                        <td style="color: #ff3366;">1 day</td>
+                        <td style="color: #ffaa00;">Access Denied</td>
+                        <td>Contractor notified</td>
+                        <td style="color: #00d4ff;">FR Camera</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td>11:45</td>
+                        <td style="color: #ff3366; font-weight: 600;">Vijay Patel</td>
+                        <td>VIS-8934</td>
+                        <td>Cargo Gate</td>
+                        <td style="color: #ff3366;">7 days</td>
+                        <td style="color: #ff3366;">Access Denied</td>
+                        <td>Visitor pass expired, escorted out</td>
+                        <td style="color: #00d4ff;">ACS</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td>10:30</td>
+                        <td style="color: #ff3366; font-weight: 600;">Sunita Reddy</td>
+                        <td>CON-4512</td>
+                        <td>Jokatte Gate</td>
+                        <td style="color: #ff3366;">2 days</td>
+                        <td style="color: #ffaa00;">Access Denied</td>
+                        <td>Supervisor contacted</td>
+                        <td style="color: #00d4ff;">FR Reader</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td>09:15</td>
+                        <td style="color: #ff3366; font-weight: 600;">Anil Mehta</td>
+                        <td>EMP-3298</td>
+                        <td>E2 Gate</td>
+                        <td style="color: #ff3366;">5 days</td>
+                        <td style="color: #ff3366;">Access Denied</td>
+                        <td>Security alert raised</td>
+                        <td style="color: #00d4ff;">Swing Barrier</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td>08:50</td>
+                        <td style="color: #ff3366; font-weight: 600;">Kavita Desai</td>
+                        <td>VIS-7621</td>
+                        <td>Main Gate</td>
+                        <td style="color: #ff3366;">1 day</td>
+                        <td style="color: #ffaa00;">Access Denied</td>
+                        <td>Temporary pass issued after verification</td>
+                        <td style="color: #00d4ff;">FR Camera</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;">View</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 15px; padding: 10px; background: rgba(255, 51, 102, 0.1); border-radius: 8px; color: #ff3366;">
+                <strong>Total Expired Badge Attempts:</strong> 6 today
+            </div>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function showSpeedViolations(area) {
+    console.log('showSpeedViolations called with area:', area);
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    console.log('Modal element:', modal);
+    
+    const isPlant = area === 'plant';
+    const speedLimit = isPlant ? 20 : 30;
+    const areaName = isPlant ? 'Plant Area' : 'Non-Plant Area';
+    
+    // Store area type globally for filtering
+    window.currentSpeedViolationArea = area;
+    
+    modalTitle.textContent = `Speed Violations - ${areaName} (Limit: ${speedLimit} km/h)`;
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    modalBody.innerHTML = `
+        <div style="display: flex; flex-direction: column; height: 550px;">
+            <!-- Date Range Picker -->
+            <div style="background: rgba(0, 212, 255, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #00d4ff;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label style="color: #00d4ff; display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.85rem;">From Date:</label>
+                        <input type="date" id="speedFromDate" max="${today}" onchange="filterSpeedViolations()" style="width: 100%; padding: 0.6rem; background: #2d3561; color: #fff; border: 2px solid #00d4ff; border-radius: 6px; font-size: 0.85rem;">
+                    </div>
+                    <div>
+                        <label style="color: #00d4ff; display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.85rem;">To Date:</label>
+                        <input type="date" id="speedToDate" max="${today}" onchange="filterSpeedViolations()" style="width: 100%; padding: 0.6rem; background: #2d3561; color: #fff; border: 2px solid #00d4ff; border-radius: 6px; font-size: 0.85rem;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Violations Table -->
+            <div id="speedViolationsContainer" style="flex: 1; overflow-y: auto;"></div>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+    
+    // Initial load with all data
+    filterSpeedViolations();
+}
+
+// Filter speed violations based on date range
+function filterSpeedViolations() {
+    const area = window.currentSpeedViolationArea;
+    const fromDate = document.getElementById('speedFromDate')?.value;
+    const toDate = document.getElementById('speedToDate')?.value;
+    const container = document.getElementById('speedViolationsContainer');
+    
+    if (!container || !area) return;
+    
+    const isPlant = area === 'plant';
+    const speedLimit = isPlant ? 20 : 30;
+    const areaName = isPlant ? 'Plant Area' : 'Non-Plant Area';
+    
+    // Generate violations data with dates
+    const allViolations = isPlant ? [
+        { date: '2026-02-26', time: '14:45', vehicle: 'KA-19-MH-5847', speed: 28, location: 'Tank Farm Road', driver: 'Rajesh Kumar' },
+        { date: '2026-02-26', time: '13:30', vehicle: 'KA-20-AB-3421', speed: 26, location: 'Processing Unit', driver: 'Amit Patel' },
+        { date: '2026-02-25', time: '12:15', vehicle: 'KA-19-CD-8765', speed: 32, location: 'Storage Area', driver: 'Vijay Singh' },
+        { date: '2026-02-25', time: '11:20', vehicle: 'KA-20-EF-2134', speed: 25, location: 'Refinery Road', driver: 'Suresh Reddy' },
+        { date: '2026-02-24', time: '10:45', vehicle: 'KA-19-GH-9876', speed: 29, location: 'Tank Farm', driver: 'Priya Sharma' },
+        { date: '2026-02-24', time: '10:10', vehicle: 'KA-20-IJ-4567', speed: 27, location: 'Processing Unit', driver: 'Anil Mehta' },
+        { date: '2026-02-23', time: '09:30', vehicle: 'KA-19-KL-7890', speed: 31, location: 'Storage Area', driver: 'Kavita Desai' },
+        { date: '2026-02-23', time: '09:00', vehicle: 'KA-20-MN-1234', speed: 24, location: 'Refinery Road', driver: 'Ramesh Yadav' },
+        { date: '2026-02-22', time: '08:45', vehicle: 'KA-19-OP-5678', speed: 28, location: 'Tank Farm Road', driver: 'Sunita Iyer' },
+        { date: '2026-02-22', time: '08:20', vehicle: 'KA-20-QR-9012', speed: 26, location: 'Processing Unit', driver: 'Vikram Singh' },
+        { date: '2026-02-21', time: '08:00', vehicle: 'KA-19-ST-3456', speed: 30, location: 'Storage Area', driver: 'Deepak Kumar' },
+        { date: '2026-02-21', time: '07:40', vehicle: 'KA-20-UV-7890', speed: 25, location: 'Refinery Road', driver: 'Anjali Nair' }
+    ] : [
+        { date: '2026-02-26', time: '15:20', vehicle: 'KA-19-AB-1234', speed: 38, location: 'Access Road', driver: 'Manoj Kumar' },
+        { date: '2026-02-26', time: '14:10', vehicle: 'KA-20-CD-5678', speed: 35, location: 'Perimeter Road', driver: 'Sanjay Patel' },
+        { date: '2026-02-25', time: '12:45', vehicle: 'KA-19-EF-9012', speed: 42, location: 'Main Approach', driver: 'Ravi Sharma' },
+        { date: '2026-02-25', time: '11:30', vehicle: 'KA-20-GH-3456', speed: 34, location: 'Service Road', driver: 'Prakash Reddy' },
+        { date: '2026-02-24', time: '10:50', vehicle: 'KA-19-IJ-7890', speed: 36, location: 'Access Road', driver: 'Neha Desai' },
+        { date: '2026-02-24', time: '09:40', vehicle: 'KA-20-KL-1234', speed: 39, location: 'Perimeter Road', driver: 'Arjun Mehta' },
+        { date: '2026-02-23', time: '08:55', vehicle: 'KA-19-MN-5678', speed: 33, location: 'Main Approach', driver: 'Pooja Singh' },
+        { date: '2026-02-23', time: '08:15', vehicle: 'KA-20-OP-9012', speed: 37, location: 'Service Road', driver: 'Kiran Rao' }
+    ];
+    
+    // Filter by date range if provided
+    let filteredViolations = allViolations;
+    if (fromDate && toDate) {
+        filteredViolations = allViolations.filter(v => {
+            return v.date >= fromDate && v.date <= toDate;
+        });
+    }
+    
+    // Render table
+    let html = `
+        <div style="background: rgba(0, 212, 255, 0.05); padding: 0.8rem; border-radius: 6px; margin-bottom: 1rem;">
+            <p style="color: #8b9dc3; margin: 0; font-size: 0.85rem;">
+                Vehicles exceeding ${speedLimit} km/h speed limit in ${areaName.toLowerCase()}
+                ${fromDate && toDate ? ` | Date Range: ${fromDate} to ${toDate}` : ' | All Records'}
+            </p>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                <tr>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Date</th>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Time</th>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Vehicle No.</th>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Speed</th>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Location</th>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Driver</th>
+                    <th style="padding: 0.7rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.8rem; text-align: left;">Action</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    
+    if (filteredViolations.length === 0) {
+        html += `
+            <tr>
+                <td colspan="7" style="padding: 2rem; text-align: center; color: #8b9dc3;">
+                    No violations found for the selected date range
+                </td>
+            </tr>`;
+    } else {
+        filteredViolations.forEach((v, idx) => {
+            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+            const speedColor = v.speed > speedLimit + 10 ? '#ff3366' : '#ffaa00';
+            const action = v.speed > speedLimit + 10 ? 'Warning Issued' : 'Verbal Warning';
+            
+            html += `
+                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${v.date}</td>
+                    <td style="padding: 0.7rem; color: #8b9dc3; font-size: 0.8rem;">${v.time}</td>
+                    <td style="padding: 0.7rem; color: #00d4ff; font-weight: 600; font-size: 0.8rem;">${v.vehicle}</td>
+                    <td style="padding: 0.7rem; color: ${speedColor}; font-weight: bold; font-size: 0.8rem;">${v.speed} km/h</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${v.location}</td>
+                    <td style="padding: 0.7rem; color: #e0e0e0; font-size: 0.8rem;">${v.driver}</td>
+                    <td style="padding: 0.7rem; color: ${speedColor}; font-size: 0.8rem;">${action}</td>
+                </tr>`;
+        });
+    }
+    
+    html += `
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(255, 51, 102, 0.1); border-radius: 8px; border-left: 4px solid #ff3366;">
+            <strong style="color: #ff3366;">Total Violations:</strong> 
+            <span style="color: #e0e0e0;">${filteredViolations.length} in ${areaName}</span>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+}
+
+function showTankerMovement() {
+    console.log('showTankerMovement called');
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    console.log('Modal element:', modal);
+    
+    modalTitle.textContent = 'Tanker Movement - Today\'s Logistics';
+    modalBody.innerHTML = `
+        <div style="display: flex; flex-direction: column; height: 500px;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00d4ff; font-weight: bold;">45</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Total Entries</div>
+                </div>
+                <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #00ff88; font-weight: bold;">28</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Dispatched</div>
+                </div>
+                <div style="background: rgba(255, 170, 0, 0.1); border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #ffaa00; font-weight: bold;">12</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">Loading/Unloading</div>
+                </div>
+                <div style="background: rgba(139, 157, 195, 0.1); border: 2px solid rgba(139, 157, 195, 0.3); border-radius: 8px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 2rem; color: #8b9dc3; font-weight: bold;">5</div>
+                    <div style="font-size: 0.85rem; color: #8b9dc3; margin-top: 0.5rem;">In Queue</div>
+                </div>
+            </div>
+            
+            <h4 style="color: #00d4ff; margin: 0 0 1rem 0;">Active Tanker Operations</h4>
+            
+            <div style="flex: 1; overflow-y: auto; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 0.5rem;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                        <tr>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Vehicle No.</th>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Item</th>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Entry Time</th>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Status</th>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Bay</th>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Progress</th>
+                            <th style="text-align: left; padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; font-weight: 600;">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-20-MN-5847</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Diesel</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">14:20</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(255, 170, 0, 0.2); color: #ffaa00; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Loading</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 3</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">75% complete</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">ETA 15 min</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-19-AB-3421</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Petrol</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">13:45</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(255, 170, 0, 0.2); color: #ffaa00; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Loading</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 1</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">60% complete</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">ETA 25 min</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-21-CD-8765</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Kerosene</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">13:10</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(0, 255, 136, 0.2); color: #00ff88; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Dispatched</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 5</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">Completed</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Exited at 13:55</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-18-EF-2134</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">LPG</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">12:50</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(139, 157, 195, 0.2); color: #8b9dc3; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">In Queue</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">-</td>
+                            <td style="padding: 0.8rem; color: #ffaa00; font-size: 0.85rem;">Waiting</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Safety inspection pending</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-20-GH-9876</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Diesel</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">12:30</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(255, 170, 0, 0.2); color: #ffaa00; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Loading</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 4</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">45% complete</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">ETA 35 min</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-19-IJ-4567</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Petrol</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">11:55</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(255, 51, 102, 0.2); color: #ff3366; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Unloading</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 6</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">85% complete</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">ETA 12 min</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-21-KL-7890</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Kerosene</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">11:20</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(139, 157, 195, 0.2); color: #8b9dc3; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">In Queue</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">-</td>
+                            <td style="padding: 0.8rem; color: #ffaa00; font-size: 0.85rem;">Waiting</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Document verification</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-20-MN-1234</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Diesel</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">10:45</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(0, 255, 136, 0.2); color: #00ff88; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Dispatched</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 2</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">Completed</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Exited at 11:30</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-19-OP-5678</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">Petrol</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">10:15</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(255, 170, 0, 0.2); color: #ffaa00; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Loading</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 7</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">30% complete</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">ETA 45 min</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #3d4a7a;">
+                            <td style="padding: 0.8rem; color: #00d4ff; font-weight: 600; font-size: 0.85rem;">KA-18-QR-9012</td>
+                            <td style="padding: 0.8rem; color: #e0e0e0; font-size: 0.85rem;">LPG</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">09:50</td>
+                            <td style="padding: 0.8rem;"><span style="padding: 0.3rem 0.6rem; background: rgba(0, 255, 136, 0.2); color: #00ff88; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Dispatched</span></td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Bay 3</td>
+                            <td style="padding: 0.8rem; color: #00ff88; font-size: 0.85rem;">Completed</td>
+                            <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.85rem;">Exited at 10:40</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function showRepeatOffenders() {
+    console.log('showRepeatOffenders called');
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    console.log('Modal element:', modal);
+    
+    modalTitle.textContent = 'Repeat Offenders - Weekly Summary';
+    modalBody.innerHTML = `
+        <div style="max-height: 500px; overflow-y: auto;">
+            <p style="color: #8b9dc3; margin-bottom: 15px;">Drivers with multiple violations this week</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Driver Name</th>
+                        <th>Vehicle No.</th>
+                        <th>Violations</th>
+                        <th>Last Incident</th>
+                        <th>Type</th>
+                        <th>Action Taken</th>
+                        <th>Remarks</th>
+                        <th>Data Source</th>
+                        <th>Attachment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: #ff3366; font-weight: 600;">Rajesh Kumar</td>
+                        <td>KA-19-MH-5847</td>
+                        <td style="color: #ff3366; font-weight: bold;">4</td>
+                        <td>Today, 14:45</td>
+                        <td>Speed (Plant)</td>
+                        <td style="color: #ff3366;">Final Warning</td>
+                        <td>Penalty notice issued, training mandatory</td>
+                        <td style="color: #00d4ff;">ESRPMS</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366; font-weight: 600;">Manoj Kumar</td>
+                        <td>KA-19-AB-1234</td>
+                        <td style="color: #ff3366; font-weight: bold;">3</td>
+                        <td>Today, 15:20</td>
+                        <td>Speed (Non-Plant)</td>
+                        <td style="color: #ffaa00;">Written Warning</td>
+                        <td>Supervisor notified, counseling scheduled</td>
+                        <td style="color: #00d4ff;">Speed Radar</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366; font-weight: 600;">Ravi Sharma</td>
+                        <td>KA-19-EF-9012</td>
+                        <td style="color: #ff3366; font-weight: bold;">3</td>
+                        <td>Today, 12:45</td>
+                        <td>Speed (Non-Plant)</td>
+                        <td style="color: #ffaa00;">Written Warning</td>
+                        <td>Safety training recommended</td>
+                        <td style="color: #00d4ff;">ANPR + Radar</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ff3366; font-weight: 600;">Vijay Singh</td>
+                        <td>KA-19-CD-8765</td>
+                        <td style="color: #ff3366; font-weight: bold;">3</td>
+                        <td>Today, 12:15</td>
+                        <td>Speed (Plant)</td>
+                        <td style="color: #ffaa00;">Written Warning</td>
+                        <td>Department head informed</td>
+                        <td style="color: #00d4ff;">ESRPMS</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: #ffaa00; font-weight: 600;">Arjun Mehta</td>
+                        <td>KA-20-KL-1234</td>
+                        <td style="color: #ffaa00; font-weight: bold;">2</td>
+                        <td>Today, 09:40</td>
+                        <td>Speed (Non-Plant)</td>
+                        <td style="color: #00ff88;">Verbal Warning</td>
+                        <td>First repeat offense, cautioned</td>
+                        <td style="color: #00d4ff;">Speed Radar</td>
+                        <td><span style="color: #00d4ff; cursor: pointer;"> View</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 51, 102, 0.1); border-radius: 8px;">
+                <h4 style="color: #ff3366; margin-bottom: 0.5rem;">Action Required</h4>
+                <ul style="color: #8b9dc3; margin: 0; padding-left: 1.5rem;">
+                    <li>5 drivers identified with repeat violations</li>
+                    <li>Warning notices issued to all repeat offenders</li>
+                    <li>Recommend driver training for top 3 offenders</li>
+                    <li>Supervisor meetings scheduled for all cases</li>
+                </ul>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+// Parked Vehicles - Level 1: Show location cards
+function showParkedVehicles() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalTitle.textContent = 'Parked Vehicles - Select Location';
+    
+    // Parking location data with occupancy
+    const parkingData = {
+        'Main Gate P1': { total: 25, occupied: 6, type: 'Cars' },
+        'Main Gate P2': { total: 30, occupied: 7, type: 'Cars' },
+        'Main Gate P3': { total: 20, occupied: 5, type: 'Cars' },
+        'E2 Gate': { total: 15, occupied: 6, type: 'Trucks' }
+    };
+    
+    modalBody.innerHTML = `
+        <div style="padding: 1rem;">
+            <p style="color: #8b9dc3; margin-bottom: 1.5rem; font-size: 0.9rem;">Click on a parking location to view detailed vehicle information</p>
+            
+            <!-- Parking Location Cards -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                ${Object.entries(parkingData).map(([location, data]) => {
+                    const occupancyPercent = Math.round((data.occupied / data.total) * 100);
+                    const remaining = data.total - data.occupied;
+                    const barColor = occupancyPercent > 90 ? '#ff3366' : occupancyPercent > 70 ? '#ffaa00' : '#00ff88';
+                    
+                    return `
+                        <div onclick="showParkingDetails('${location}')" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.05) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; position: relative;" onmouseover="this.style.borderColor='#00d4ff'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(0, 212, 255, 0.3)'; this.style.transform='translateY(0)'">
+                            <div style="font-size: 1.1rem; color: #00d4ff; font-weight: 600; margin-bottom: 0.5rem;">${location}</div>
+                            <div style="font-size: 0.85rem; color: #8b9dc3; margin-bottom: 1rem;">${data.type} Parking</div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #8b9dc3;">Occupancy</div>
+                                    <div style="font-size: 1.5rem; color: ${barColor}; font-weight: bold;">${data.occupied}/${data.total}</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 0.75rem; color: #8b9dc3;">Available</div>
+                                    <div style="font-size: 1.5rem; color: #00ff88; font-weight: bold;">${remaining}</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
+                                <div style="background: ${barColor}; height: 100%; width: ${occupancyPercent}%; transition: width 0.3s;"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.8rem; color: ${barColor}; font-weight: 600;">${occupancyPercent}% Full</span>
+                                <span style="font-size: 0.75rem; color: #00d4ff;">Click to view details →</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+            
+            <!-- Data Source Info -->
+            <div style="margin-top: 2rem; padding: 1rem; background: rgba(0, 212, 255, 0.05); border-radius: 8px; border-left: 4px solid #00d4ff;">
+                <div style="font-size: 0.85rem; color: #00d4ff; font-weight: 600; margin-bottom: 0.3rem;">📡 Data Source: ANPR System</div>
+                <div style="font-size: 0.75rem; color: #8b9dc3;">Real-time vehicle tracking via Automatic Number Plate Recognition</div>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+// Parked Vehicles - Level 2: Show detailed table for specific location
+function showParkingDetails(location) {
+    console.log('showParkingDetails called with location:', location);
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    console.log('Modal element:', modal);
+    console.log('parkingVehiclesData:', parkingVehiclesData);
+    
+    modalTitle.textContent = `${location} - Parked Vehicles`;
+    
+    // Filter vehicles for this location
+    const locationVehicles = parkingVehiclesData.filter(v => v.location === location);
+    console.log('Filtered vehicles for', location, ':', locationVehicles);
+    
+    modalBody.innerHTML = `
+        <div style="display: flex; flex-direction: column; height: 550px;">
+            <!-- Back Button -->
+            <div style="margin-bottom: 1rem;">
+                <button onclick="showParkedVehicles()" style="background: rgba(0, 212, 255, 0.2); color: #00d4ff; border: 1px solid #00d4ff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(0, 212, 255, 0.3)'" onmouseout="this.style.background='rgba(0, 212, 255, 0.2)'">
+                    ← Back to Locations
+                </button>
+            </div>
+            
+            <!-- Summary Info -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                <div style="background: rgba(0, 212, 255, 0.1); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #00d4ff;">
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-bottom: 0.3rem;">Total Vehicles</div>
+                    <div style="font-size: 1.5rem; color: #00d4ff; font-weight: bold;">${locationVehicles.length}</div>
+                </div>
+                <div style="background: rgba(0, 255, 136, 0.1); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #00ff88;">
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-bottom: 0.3rem;">Vehicle Type</div>
+                    <div style="font-size: 1.2rem; color: #00ff88; font-weight: bold;">${locationVehicles[0]?.type || 'N/A'}</div>
+                </div>
+                <div style="background: rgba(0, 212, 255, 0.1); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #00d4ff;">
+                    <div style="font-size: 0.75rem; color: #8b9dc3; margin-bottom: 0.3rem;">Data Source</div>
+                    <div style="font-size: 1.2rem; color: #00d4ff; font-weight: bold;">ANPR</div>
+                </div>
+            </div>
+            
+            <!-- Vehicles Table -->
+            <div style="flex: 1; overflow-y: auto; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 0.5rem;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="position: sticky; top: 0; background: #1e2746; z-index: 10;">
+                        <tr>
+                            <th style="padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; text-align: left;">Vehicle Number</th>
+                            <th style="padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; text-align: left;">Type</th>
+                            <th style="padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; text-align: left;">Entry Time</th>
+                            <th style="padding: 0.8rem; color: #00d4ff; border-bottom: 2px solid #3d4a7a; font-size: 0.85rem; text-align: left;">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${locationVehicles.length > 0 ? locationVehicles.map((v, idx) => {
+                            const bgColor = idx % 2 === 0 ? 'rgba(0, 212, 255, 0.05)' : 'transparent';
+                            
+                            return `
+                                <tr style="background: ${bgColor}; border-bottom: 1px solid #3d4a7a;">
+                                    <td style="padding: 0.8rem; color: #fff; font-size: 0.9rem; font-weight: 600;">${v.vehicle}</td>
+                                    <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.9rem;">${v.type}</td>
+                                    <td style="padding: 0.8rem; color: #00ff88; font-size: 0.9rem;">${v.entryTime}</td>
+                                    <td style="padding: 0.8rem; color: #8b9dc3; font-size: 0.9rem;">${v.duration}</td>
+                                </tr>
+                            `;
+                        }).join('') : `
+                            <tr>
+                                <td colspan="4" style="padding: 2rem; text-align: center; color: #8b9dc3;">No vehicles found for this location</td>
+                            </tr>
+                        `}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Download Report Button -->
+            <div style="margin-top: 1rem;">
+                <button onclick="alert('${location} Parking Report downloaded successfully!')" style="width: 100%; background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; padding: 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s;">
+                     Download ${location} Report
+                </button>
+            </div>
+        </div>
+    `;
+    
+    console.log('Modal display before:', modal.style.display);
+    modal.style.display = 'block';
+    console.log('Modal display after:', modal.style.display);
+}
+
+// Incident Trend Report Functions
+function showIncidentTrendReportOptions() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalTitle.textContent = '30-Day Incident Trend - Download Report';
+    modalBody.innerHTML = `
+        <div style="padding: 1rem;">
+            <p style="color: #8b9dc3; margin-bottom: 1.5rem;">Select a date range to download the incident trend report</p>
+            
+            <div style="display: grid; gap: 1rem;">
+                <button onclick="downloadIncidentTrendReport('last7days')" style="background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.3s;">
+                    Last 7 Days
+                </button>
+                
+                <button onclick="downloadIncidentTrendReport('last30days')" style="background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.3s;">
+                    Last 30 Days
+                </button>
+                
+                <button onclick="downloadIncidentTrendReport('thismonth')" style="background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.3s;">
+                    This Month
+                </button>
+                
+                <button onclick="showIncidentTrendCustomDateRange()" style="background: linear-gradient(135deg, #ffaa00 0%, #ff8800 100%); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.3s;">
+                    Custom Date Range
+                </button>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function showIncidentTrendCustomDateRange() {
+    const modal = document.getElementById('deviceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalTitle.textContent = 'Custom Date Range - Incident Trend Report';
+    modalBody.innerHTML = `
+        <div style="padding: 1rem;">
+            <p style="color: #8b9dc3; margin-bottom: 1.5rem;">Select custom date range for the report</p>
+            
+            <div style="display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="color: #00d4ff; display: block; margin-bottom: 0.5rem;">From Date:</label>
+                    <input type="date" id="customStartDate" style="width: 100%; padding: 0.7rem; background: #1e2746; border: 2px solid #3d4a7a; border-radius: 8px; color: #e0e0e0; font-size: 1rem;">
+                </div>
+                
+                <div>
+                    <label style="color: #00d4ff; display: block; margin-bottom: 0.5rem;">To Date:</label>
+                    <input type="date" id="customEndDate" style="width: 100%; padding: 0.7rem; background: #1e2746; border: 2px solid #3d4a7a; border-radius: 8px; color: #e0e0e0; font-size: 1rem;">
+                </div>
+            </div>
+            
+            <button onclick="downloadIncidentTrendReport('custom')" style="width: 100%; background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500;">
+                Download Report
+            </button>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function downloadIncidentTrendReport(period) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    let startDate, endDate, title;
+    const today = new Date();
+    
+    if (period === 'last7days') {
+        endDate = new Date(today);
+        startDate = new Date(today);
+        startDate.setDate(startDate.getDate() - 7);
+        title = 'Last 7 Days Incident Trend Report';
+    } else if (period === 'last30days') {
+        endDate = new Date(today);
+        startDate = new Date(today);
+        startDate.setDate(startDate.getDate() - 30);
+        title = 'Last 30 Days Incident Trend Report';
+    } else if (period === 'thismonth') {
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        endDate = new Date(today);
+        title = 'This Month Incident Trend Report';
+    } else if (period === 'custom') {
+        const startInput = document.getElementById('customStartDate').value;
+        const endInput = document.getElementById('customEndDate').value;
+        
+        if (!startInput || !endInput) {
+            alert('Please select both start and end dates');
+            return;
+        }
+        
+        startDate = new Date(startInput);
+        endDate = new Date(endInput);
+        title = 'Custom Date Range Incident Trend Report';
+    }
+    
+    // Generate sample data
+    const incidentData = [];
+    let currentDate = new Date(startDate);
+    
+    while (currentDate <= endDate) {
+        const dateStr = currentDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+        const total = Math.floor(Math.random() * 8) + 4; // 4-12 incidents
+        const speed = Math.floor(total * 0.3);
+        const unauth = Math.floor(total * 0.2);
+        const helmet = Math.floor(total * 0.15);
+        const ppe = Math.floor(total * 0.15);
+        const tail = Math.floor(total * 0.1);
+        const badge = Math.floor(total * 0.05);
+        const vehicle = total - (speed + unauth + helmet + ppe + tail + badge);
+        
+        incidentData.push({
+            date: dateStr,
+            total: total,
+            speed: speed,
+            unauth: unauth,
+            helmet: helmet,
+            ppe: ppe,
+            tail: tail,
+            badge: badge,
+            vehicle: vehicle
+        });
+        
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // PDF Header
+    doc.setFillColor(30, 39, 70);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    doc.setTextColor(0, 212, 255);
+    doc.setFontSize(18);
+    doc.setFont(undefined, 'bold');
+    doc.text('MRPL - Security Dashboard', 105, 15, { align: 'center' });
+    
+    doc.setFontSize(14);
+    doc.setTextColor(255, 255, 255);
+    doc.text(title, 105, 25, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.setTextColor(139, 157, 195);
+    doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 105, 33, { align: 'center' });
+    
+    // Daily Incident Summary Table
+    doc.setTextColor(0, 212, 255);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Daily Incident Summary', 14, 50);
+    
+    doc.autoTable({
+        startY: 55,
+        head: [['Date', 'Total', 'Incident Breakdown']],
+        body: incidentData.map(d => [
+            d.date,
+            d.total,
+            `Speed: ${d.speed}, Unauth: ${d.unauth}, Helmet: ${d.helmet}, PPE: ${d.ppe}, Tail: ${d.tail}, Badge: ${d.badge}, Vehicle: ${d.vehicle}`
+        ]),
+        theme: 'grid',
+        headStyles: {
+            fillColor: [0, 212, 255],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+        },
+        styles: {
+            fontSize: 9,
+            cellPadding: 3
+        },
+        columnStyles: {
+            0: { cellWidth: 30 },
+            1: { cellWidth: 20, halign: 'center' },
+            2: { cellWidth: 'auto' }
+        }
+    });
+    
+    let finalY = doc.lastAutoTable.finalY + 10;
+    
+    // Incident Type Summary
+    const totalIncidents = incidentData.reduce((sum, d) => sum + d.total, 0);
+    const totalSpeed = incidentData.reduce((sum, d) => sum + d.speed, 0);
+    const totalUnauth = incidentData.reduce((sum, d) => sum + d.unauth, 0);
+    const totalHelmet = incidentData.reduce((sum, d) => sum + d.helmet, 0);
+    const totalPPE = incidentData.reduce((sum, d) => sum + d.ppe, 0);
+    const totalTail = incidentData.reduce((sum, d) => sum + d.tail, 0);
+    const totalBadge = incidentData.reduce((sum, d) => sum + d.badge, 0);
+    const totalVehicle = incidentData.reduce((sum, d) => sum + d.vehicle, 0);
+    
+    doc.setTextColor(0, 212, 255);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Incident Type Summary', 14, finalY);
+    
+    doc.autoTable({
+        startY: finalY + 5,
+        head: [['Incident Type', 'Count', 'Percentage']],
+        body: [
+            ['Speed Violations', totalSpeed, `${((totalSpeed/totalIncidents)*100).toFixed(1)}%`],
+            ['Unauthorized Access', totalUnauth, `${((totalUnauth/totalIncidents)*100).toFixed(1)}%`],
+            ['Helmet Violations', totalHelmet, `${((totalHelmet/totalIncidents)*100).toFixed(1)}%`],
+            ['PPE Violations', totalPPE, `${((totalPPE/totalIncidents)*100).toFixed(1)}%`],
+            ['Tailgating', totalTail, `${((totalTail/totalIncidents)*100).toFixed(1)}%`],
+            ['Badge Issues', totalBadge, `${((totalBadge/totalIncidents)*100).toFixed(1)}%`],
+            ['Vehicle Issues', totalVehicle, `${((totalVehicle/totalIncidents)*100).toFixed(1)}%`]
+        ],
+        theme: 'grid',
+        headStyles: {
+            fillColor: [0, 212, 255],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+        },
+        styles: {
+            fontSize: 10,
+            cellPadding: 4
+        }
+    });
+    
+    finalY = doc.lastAutoTable.finalY + 10;
+    
+    // Key Insights
+    doc.setTextColor(0, 212, 255);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Key Insights', 14, finalY);
+    
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(`• Total Incidents: ${totalIncidents}`, 14, finalY + 8);
+    doc.text(`• Average per Day: ${(totalIncidents / incidentData.length).toFixed(1)}`, 14, finalY + 15);
+    doc.text(`• Most Common: Speed Violations (${((totalSpeed/totalIncidents)*100).toFixed(1)}%)`, 14, finalY + 22);
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(139, 157, 195);
+    doc.text('MRPL - Integrated Security Command & Control System', 105, 285, { align: 'center' });
+    
+    // Save PDF
+    const filename = `MRPL_Incident_Trend_${period}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(filename);
+    
+    closeDeviceModal();
+}
+
+
+// Debug: Verify functions are loaded
+console.log('=== VEHICLE MONITORING FUNCTIONS LOADED ===');
+console.log('showSpeedViolations:', typeof showSpeedViolations);
+console.log('showTankerMovement:', typeof showTankerMovement);
+console.log('showRepeatOffenders:', typeof showRepeatOffenders);
+console.log('showExpiredBadgeAttempts:', typeof showExpiredBadgeAttempts);
